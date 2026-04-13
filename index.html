@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Osaka's Web Dev Corner — A retro Windows XP-styled web developer portfolio.">
+  <title>★ Bilgrandov's Tech Corner ★ ~ Home</title>
+  <link rel="stylesheet" href="https://unpkg.com/xp.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <canvas id="sparkle-canvas" aria-hidden="true"></canvas>
+
+  <div class="page-container">
+    <div class="window main-window">
+      <div class="title-bar">
+        <div class="title-bar-text">💫 Bilgrandov's Tech Corner — Home</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <!-- Marquee -->
+        <div class="marquee-bar">
+          <span class="marquee-text">★彡 Welcome to my tech portfolio! ★彡 ～ Junior Fullstack Developer ～ ★彡 Backend
+            Enthusiast ★彡 ～ Powered by Laravel & Coffee ★彡 Welcome! ★彡</span>
+        </div>
+
+        <br>
+
+        <!-- About -->
+        <div class="home-content">
+          <div class="home-mascot">
+            <img src="assets/profile.jpg" alt="Bilgrandov" class="profile-photo">
+            <p class="mascot-label">～ Bilgrandov ～</p>
+          </div>
+          <div class="home-text">
+            <h2>✧ Halo! (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧</h2>
+            <p>I'm <strong>Bilgrandov</strong>, a Junior Fullstack Developer with a strong interest in Backend
+              development.</p>
+            <p>I graduated with a D3 in Computer Science from Universitas Riau. My primary tech stack includes
+              <strong>Laravel, PHP, JS, and MySQL</strong>. I am also proficient in system design using
+              <strong>UML</strong>.
+            </p>
+            <p>I have experience building websites using AI-assisted workflows and modern web technologies like
+              <strong>Flexbox, Grid, and Semantic HTML</strong>. I focus on creating responsive and well-architected web
+              applications. Ready to build something robust together! ✨
+            </p>
+          </div>
+        </div>
+
+        <br>
+
+        <!-- Stats -->
+        <div class="home-stats">
+          <div class="stat-box">
+            <fieldset>
+              <legend>Projects</legend>
+              <span class="stat-num" data-count="2">0</span>
+            </fieldset>
+          </div>
+          <div class="stat-box">
+            <fieldset>
+              <legend>Years Exp</legend>
+              <span class="stat-num" data-count="1">0</span>
+            </fieldset>
+          </div>
+          <!-- <div class="stat-box">
+            <fieldset>
+              <legend>Cups of Coffee</legend>
+              <span class="stat-num" data-count="999">0</span>
+            </fieldset>
+          </div> -->
+        </div>
+      </div>
+      <div class="window-footer">
+        <span><img src="assets/profile.jpg" class="footer-mascot" alt="">© 2026 Bilgrandov's Tech Corner</span>
+        <span>Made with ♡ &amp; HTML</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
+  <nav class="taskbar">
+    <button class="start-btn" type="button">
+      <span class="start-icon">🪟</span> Start
+    </button>
+    <div class="taskbar-divider"></div>
+    <div class="taskbar-links">
+      <a href="index.html" class="taskbar-link active"><span class="link-icon">🏠</span> <span>Home</span></a>
+      <a href="skills.html" class="taskbar-link"><span class="link-icon">⚡</span> <span>Skills</span></a>
+      <a href="projects.html" class="taskbar-link"><span class="link-icon">📁</span> <span>Projects</span></a>
+      <a href="contact.html" class="taskbar-link"><span class="link-icon">💌</span> <span>Contact</span></a>
+    </div>
+    <div class="taskbar-clock" id="taskbar-clock">12:00</div>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

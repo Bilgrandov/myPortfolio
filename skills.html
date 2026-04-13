@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Osaka's Web Dev Corner — Skills & Technologies">
+  <title>★ Bilgrandov's Tech Corner ★ ~ Skills</title>
+  <link rel="stylesheet" href="https://unpkg.com/xp.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+</head>
+<body>
+  <canvas id="sparkle-canvas" aria-hidden="true"></canvas>
+
+  <div class="page-container">
+    <div class="window main-window">
+      <div class="title-bar">
+        <div class="title-bar-text">⚡ Skills — skill_tree.dat</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body">
+
+        <h3 class="skill-category-title">🎨 Front-End</h3>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <i class="devicon-html5-plain colored" style="font-size:48px"></i>
+            <span class="skill-name">HTML5</span>
+          </div>
+          <div class="skill-item">
+            <i class="devicon-css3-plain colored" style="font-size:48px"></i>
+            <span class="skill-name">CSS3</span>
+          </div>
+          <div class="skill-item">
+            <i class="devicon-javascript-plain colored" style="font-size:48px"></i>
+            <span class="skill-name">JavaScript</span>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon" style="font-size:44px">📦</span>
+            <span class="skill-name">Flexbox</span>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon" style="font-size:44px">🏁</span>
+            <span class="skill-name">Grid</span>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon" style="font-size:44px">📑</span>
+            <span class="skill-name">Semantic</span>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon" style="font-size:44px">📱</span>
+            <span class="skill-name">Responsive</span>
+          </div>
+          <div class="skill-item">
+            <i class="devicon-bootstrap-plain colored" style="font-size:48px"></i>
+            <span class="skill-name">Bootstrap</span>
+          </div>
+          <div class="skill-item">
+            <i class="devicon-tailwindcss-original colored" style="font-size:48px"></i>
+            <span class="skill-name">Tailwind</span>
+          </div>
+        </div>
+
+        <h3 class="skill-category-title">⚙️ Back-End & Database</h3>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <i class="devicon-php-plain colored" style="font-size:48px"></i>
+            <span class="skill-name">PHP</span>
+          </div>
+          <div class="skill-item">
+            <i class="devicon-laravel-original colored" style="font-size:48px"></i>
+            <span class="skill-name">Laravel</span>
+          </div>
+          <div class="skill-item">
+            <i class="devicon-mysql-plain colored" style="font-size:48px"></i>
+            <span class="skill-name">MySQL</span>
+          </div>
+        </div>
+
+        <h3 class="skill-category-title">🛠️ Design & Methodology</h3>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <span class="skill-icon" style="font-size:44px">📐</span>
+            <span class="skill-name">UML Design</span>
+          </div>
+          <div class="skill-item">
+            <span class="skill-icon" style="font-size:44px">🤖</span>
+            <span class="skill-name">AI build site</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="window-footer">
+        <span><img src="assets/profile.jpg" class="footer-mascot" alt="">14 skills loaded</span>
+        <span>～ always learning! ～</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
+  <nav class="taskbar">
+    <button class="start-btn" type="button">
+      <span class="start-icon">🪟</span> Start
+    </button>
+    <div class="taskbar-divider"></div>
+    <div class="taskbar-links">
+      <a href="index.html" class="taskbar-link"><span class="link-icon">🏠</span> <span>Home</span></a>
+      <a href="skills.html" class="taskbar-link active"><span class="link-icon">⚡</span> <span>Skills</span></a>
+      <a href="projects.html" class="taskbar-link"><span class="link-icon">📁</span> <span>Projects</span></a>
+      <a href="contact.html" class="taskbar-link"><span class="link-icon">💌</span> <span>Contact</span></a>
+    </div>
+    <div class="taskbar-clock" id="taskbar-clock">12:00</div>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>

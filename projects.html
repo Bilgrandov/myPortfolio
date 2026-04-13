@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Osaka's Web Dev Corner — My Projects">
+  <title>★ Bilgrandov's Tech Corner ★ ~ Projects</title>
+  <link rel="stylesheet" href="https://unpkg.com/xp.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <canvas id="sparkle-canvas" aria-hidden="true"></canvas>
+
+  <div class="page-container">
+    <div class="window main-window">
+      <div class="title-bar">
+        <div class="title-bar-text">📁 My Projects — C:\Projects</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="projects-list">
+          <!-- Project 0: Spotify Redesign -->
+          <div class="window project-window">
+            <div class="title-bar">
+              <div class="title-bar-text">🎵 Spotify Redesign</div>
+              <div class="title-bar-controls">
+                <button aria-label="Close"></button>
+              </div>
+            </div>
+            <div class="window-body">
+              <div class="project-body">
+                <div class="project-icon">🎧</div>
+                <div class="project-details">
+                  <h3>Spotify App Redesign</h3>
+                  <div class="image-scroll-container">
+                    <img src="assets/spotify_project.jpg" alt="Spotify Redesign Mockup">
+                  </div>
+                  <p>A modern and sleek redesign of the Spotify mobile interface, focusing on improved navigation and a
+                    vibrant green aesthetic.</p>
+                  <div class="project-tags">
+                    <span>Figma</span><span>UI/UX</span><span>Mobile Design</span>
+                  </div>
+                  <div class="project-links">
+                    <a href="https://www.figma.com/design/JfzQzyBg7v0NJDBrF15eb8/Portofolio-Lat?node-id=0-1&p=f&t=avqRPUnPtmw2vLJn-0"
+                      target="_blank">
+                      <button type="button">► Figma Design</button>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 1: MonitoringDanaDesa -->
+          <div class="window project-window">
+            <div class="title-bar">
+              <div class="title-bar-text">📊 MonitoringDanaDesa</div>
+              <div class="title-bar-controls">
+                <button aria-label="Close"></button>
+              </div>
+            </div>
+            <div class="window-body">
+              <div class="project-body">
+                <div class="project-icon">🏘️</div>
+                <div class="project-details">
+                  <h3>Monitoring Dana Desa</h3>
+                  <div class="image-scroll-container">
+                    <img src="assets/monitoringDanaDesa.jpg" alt="Spotify Redesign Mockup">
+                  </div>
+                  <p>Sistem informasi pemantauan alokasi dan penggunaan Dana Desa berbasis web, dirancang untuk
+                    transparansi dan akuntabilitas data.</p>
+                  <div class="project-tags">
+                    <span>Laravel</span><span>Bootstrap</span><span>MySQL</span><span>Web App</span>
+                  </div>
+                  <div class="project-links">
+                    <button type="button" disabled>► Private Project</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="window-footer">
+        <span><img src="assets/profile.jpg" class="footer-mascot" alt="">2 projects found</span>
+        <span>～ more coming soon! ～</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
+  <nav class="taskbar">
+    <button class="start-btn" type="button">
+      <span class="start-icon">🪟</span> Start
+    </button>
+    <div class="taskbar-divider"></div>
+    <div class="taskbar-links">
+      <a href="index.html" class="taskbar-link"><span class="link-icon">🏠</span> <span>Home</span></a>
+      <a href="skills.html" class="taskbar-link"><span class="link-icon">⚡</span> <span>Skills</span></a>
+      <a href="projects.html" class="taskbar-link active"><span class="link-icon">📁</span> <span>Projects</span></a>
+      <a href="contact.html" class="taskbar-link"><span class="link-icon">💌</span> <span>Contact</span></a>
+    </div>
+    <div class="taskbar-clock" id="taskbar-clock">12:00</div>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

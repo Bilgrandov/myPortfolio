@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Osaka's Web Dev Corner — Posts & Thoughts">
+  <title>★ Bilgrandov's Tech Corner ★ ~ Posts</title>
+  <link rel="stylesheet" href="https://unpkg.com/xp.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="sparkle-canvas" aria-hidden="true"></canvas>
+
+  <div class="page-container">
+    <!-- New Post Window -->
+    <div class="window main-window" style="margin-bottom: 16px;">
+      <div class="title-bar">
+        <div class="title-bar-text">📝 New Post — compose.exe</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="post-form">
+          <label for="post-title">Title:</label>
+          <input type="text" id="post-title" placeholder="What's on your mind?">
+
+          <label for="post-content">Content:</label>
+          <textarea id="post-content" placeholder="Write anything you want here~ (◠‿◠)"></textarea>
+
+          <div class="form-actions">
+            <button type="button" id="post-submit">📮 Publish Post</button>
+            <button type="button" id="post-clear">🗑️ Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Posts List Window -->
+    <div class="window main-window">
+      <div class="title-bar">
+        <div class="title-bar-text">📋 All Posts — blog_feed.dat</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="posts-list" id="posts-list">
+          <p class="no-posts">No posts yet! Write your first post above~ ✨</p>
+        </div>
+      </div>
+      <div class="window-footer">
+        <span><img src="assets/profile.jpg" class="footer-mascot" alt=""><span id="post-count">0</span> posts</span>
+        <span>～ Bilgrandov's blog ～</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
+  <nav class="taskbar">
+    <button class="start-btn" type="button">
+      <span class="start-icon">🪟</span> Start
+    </button>
+    <div class="taskbar-divider"></div>
+    <div class="taskbar-links">
+      <a href="index.html" class="taskbar-link"><span class="link-icon">🏠</span> <span>Home</span></a>
+      <a href="skills.html" class="taskbar-link"><span class="link-icon">⚡</span> <span>Skills</span></a>
+      <a href="projects.html" class="taskbar-link"><span class="link-icon">📁</span> <span>Projects</span></a>
+      <a href="posts.html" class="taskbar-link active"><span class="link-icon">📝</span> <span>Posts</span></a>
+      <a href="contact.html" class="taskbar-link"><span class="link-icon">💌</span> <span>Contact</span></a>
+    </div>
+    <div class="taskbar-clock" id="taskbar-clock">12:00</div>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>

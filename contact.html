@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Osaka's Web Dev Corner — Contact & Guestbook">
+  <title>★ Bilgrandov's Tech Corner ★ ~ Contact</title>
+  <link rel="stylesheet" href="https://unpkg.com/xp.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <canvas id="sparkle-canvas" aria-hidden="true"></canvas>
+
+  <div class="page-container">
+    <div class="window main-window">
+      <div class="title-bar">
+        <div class="title-bar-text">💌 Contact — send_mail.exe</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body">
+
+        <p style="margin-bottom: 12px; font-size: 13px;">Want to work together or just say hi? Drop me a line! (◕‿◕✿)
+        </p>
+
+        <fieldset>
+          <legend>Contact Links</legend>
+          <div class="contact-grid">
+            <a href="mailto:Bilgrandov9902003@gmail.com" target="_blank" class="contact-item-badge">
+              <img
+                src="https://img.shields.io/badge/Gmail-Bilgrandov9902003@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white"
+                alt="Gmail Badge">
+            </a>
+            <a href="https://github.com/bilgrandov" target="_blank" rel="noopener" class="contact-item-badge">
+              <img
+                src="https://img.shields.io/badge/GitHub-bilgrandov-181717?style=for-the-badge&logo=github&logoColor=white"
+                alt="GitHub Badge">
+            </a>
+            <a href="https://www.linkedin.com/in/bilgrandov/" target="_blank" rel="noopener" class="contact-item-badge">
+              <img
+                src="https://img.shields.io/badge/LinkedIn-bilgrandov-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"
+                alt="LinkedIn Badge">
+            </a>
+            <a href="https://www.instagram.com/mentor_hayalan/" target="_blank" rel="noopener"
+              class="contact-item-badge">
+              <img
+                src="https://img.shields.io/badge/Instagram-@bilgrandov-E4405F?style=for-the-badge&logo=instagram&logoColor=white"
+                alt="Instagram Badge">
+            </a>
+          </div>
+        </fieldset>
+
+        <div class="guestbook-section hidden">
+          <h3>★ Guestbook ★</h3>
+          <div class="guestbook-form">
+            <textarea id="guestbook-input" rows="2" placeholder="Leave a nice message~ (◠‿◠)"></textarea>
+            <button type="button" id="guestbook-submit">✉ Sign!</button>
+          </div>
+          <div id="guestbook-messages" class="guestbook-messages"></div>
+        </div>
+
+      </div>
+      <div class="window-footer">
+        <span><img src="assets/profile.jpg" class="footer-mascot" alt="">～ See you next time! ～</span>
+        <span>Best viewed in 800×600</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
+  <nav class="taskbar">
+    <button class="start-btn" type="button">
+      <span class="start-icon">🪟</span> Start
+    </button>
+    <div class="taskbar-divider"></div>
+    <div class="taskbar-links">
+      <a href="index.html" class="taskbar-link"><span class="link-icon">🏠</span> <span>Home</span></a>
+      <a href="skills.html" class="taskbar-link"><span class="link-icon">⚡</span> <span>Skills</span></a>
+      <a href="projects.html" class="taskbar-link"><span class="link-icon">📁</span> <span>Projects</span></a>
+      <a href="contact.html" class="taskbar-link active"><span class="link-icon">💌</span> <span>Contact</span></a>
+    </div>
+    <div class="taskbar-clock" id="taskbar-clock">12:00</div>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
