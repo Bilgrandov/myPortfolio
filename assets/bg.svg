@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <defs>
+    <linearGradient id="win7Bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3399FF; stop-opacity:1" /> <stop offset="100%" style="stop-color:#003366; stop-opacity:1" /> </linearGradient>
+
+    <linearGradient id="curveGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFFFFF; stop-opacity:0.6" />
+      <stop offset="50%" style="stop-color:#99CCFF; stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#FFFFFF; stop-opacity:0" />
+    </linearGradient>
+
+    <linearGradient id="curveGrad2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00FFFF; stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#CCFFCC; stop-opacity:0.1" />
+    </linearGradient>
+    
+    <filter id="aeroBlur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#win7Bg)"/>
+
+  <radialGradient id="softLight" cx="50%" cy="40%" r="60%">
+    <stop offset="0%" style="stop-color:#FFFFFF; stop-opacity:0.3" />
+    <stop offset="100%" style="stop-color:#FFFFFF; stop-opacity:0" />
+  </radialGradient>
+  <rect width="100%" height="100%" fill="url(#softLight)" />
+
+  <path d="M 0,100 C 300,50 700,200 1000,100 L 1000,0 L 0,0 Z" fill="url(#curveGrad1)" filter="url(#aeroBlur)" transform="scale(1.2) translate(-50, -50)"/>
+
+  <path d="M 0,300 C 400,150 800,450 1200,300 L 1200,600 L 0,600 Z" fill="url(#curveGrad2)" opacity="0.6" transform="translate(0, 100)"/>
+
+  <ellipse cx="20%" cy="20%" rx="300" ry="100" fill="#FFFFFF" fill-opacity="0.15" filter="url(#aeroBlur)"/>
+  <ellipse cx="80%" cy="80%" rx="200" ry="50" fill="#CCFFFF" fill-opacity="0.1" filter="url(#aeroBlur)"/>
+
+</svg>
