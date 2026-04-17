@@ -7,6 +7,7 @@
   <title>★ Bilgrandov's Tech Corner ★ ~ Posts</title>
   <link rel="stylesheet" href="https://unpkg.com/xp.css">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
   <canvas id="sparkle-canvas" aria-hidden="true"></canvas>
@@ -31,8 +32,13 @@
           <textarea id="post-content" placeholder="Write anything you want here~ (◠‿◠)"></textarea>
 
           <div class="form-actions">
-            <button type="button" id="post-submit">📮 Publish Post</button>
+            <button type="button" id="post-submit">📋 Generate JSON</button>
             <button type="button" id="post-clear">🗑️ Clear</button>
+          </div>
+          <div id="json-output-container" class="hidden" style="margin-top: 10px;">
+            <label>Copy this to data/posts.json:</label>
+            <textarea id="json-output" readonly style="height: 100px; font-family: monospace; font-size: 11px;"></textarea>
+            <button type="button" id="copy-json-btn">🖇️ Copy to Clipboard</button>
           </div>
         </div>
       </div>
@@ -49,13 +55,26 @@
         </div>
       </div>
       <div class="window-body">
+        <ul role="tablist" class="filter-tabs">
+          <li role="tab" class="active" data-filter="all"><a href="#all">All Posts</a></li>
+          <li role="tab" data-filter="journal"><a href="#journal">Journal</a></li>
+          <li role="tab" data-filter="blog"><a href="#blog">Blog</a></li>
+        </ul>
+
         <div class="posts-list" id="posts-list">
-          <p class="no-posts">No posts yet! Write your first post above~ ✨</p>
+          <!-- Posts will be injected here -->
+          <p class="no-posts">Loading posts... ⌛</p>
+        </div>
+
+        <div class="pagination-bar" id="pagination-controls">
+          <button id="prev-page" disabled>◀ Prev</button>
+          <span id="page-info">Page 1 of 1</span>
+          <button id="next-page" disabled>Next ▶</button>
         </div>
       </div>
       <div class="window-footer">
-        <span><img src="assets/profile.jpg" class="footer-mascot" alt=""><span id="post-count">0</span> posts</span>
-        <span>～ Bilgrandov's blog ～</span>
+        <span><img src="assets/profile.jpg" class="footer-mascot" alt=""><span id="post-count">0</span> items total</span>
+        <span>～ Web Dev Journaling ～</span>
       </div>
     </div>
   </div>

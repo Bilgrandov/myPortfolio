@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "type": "journal",
+    "title": "Starting the Kirby-Clone Project",
+    "date": "2026-04-15 10:00",
+    "content": "Today I set up the basic XP.css structure. Honestly, the nostalgia is hitting hard. I want to make this look as authentic as possible! (｡♥‿♥｡)"
+  },
+  {
+    "id": 2,
+    "type": "blog",
+    "title": "Why Markdown is Essential for Developers",
+    "date": "2026-04-16 14:30",
+    "content": "## Introduction\nMarkdown allows us to write structured content without leaving the editor. \n\n### Benefits\n- It's **fast**\n- It's **portable**\n- It looks great on GitHub!\n\nI'm using `marked.js` to render this post right now. Amazing!"
+  },
+  {
+    "id": 3,
+    "type": "journal",
+    "title": "Learning about CSS Filters",
+    "date": "2026-04-17 09:00",
+    "content": "Found out how to make 'glassmorphism' using `backdrop-filter`. Maybe I can add some modern touches to this retro theme?"
+  },
+  {
+    "id": 4,
+    "type": "blog",
+    "title": "Exploring the World of Laravel",
+    "date": "2026-04-10 11:20",
+    "content": "Laravel makes backend development so much smoother. The **Eloquent ORM** is a game changer for database interactions.\n\n> \"The PHP Framework for Web Artisans\"\n\nCan't wait to build more with it."
+  }
+]
