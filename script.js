@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPosts();
   initGuestbook();
   initLatestPostsTeaser();
+  initAdminMode();
 });
 
 /* --- Sparkle Cursor Trail --- */
@@ -371,4 +372,82 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+/* --- Admin Mode (Security) --- */
+const PASS_HASH = '87fd4d3bdc50aaf7435056df8f56d21efcfeb9da7305090ed09d1ff62f66aa6c'; // SHA-256 of "funixxnya16"
+
+async function sha256(message) {
+  const msgUint8 = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function initAdminMode() {
+  const loginModal = document.getElementById('login-modal');
+  const passwordInput = document.getElementById('admin-password');
+  const loginSubmit = document.getElementById('login-submit');
+  const loginCancel = document.getElementById('login-cancel');
+  const closeLogin = document.getElementById('close-login');
+  const loginError = document.getElementById('login-error');
+  const composeWindow = document.getElementById('admin-compose-window');
+
+  function showLogin() {
+    loginModal?.classList.remove('hidden');
+    passwordInput?.focus();
+  }
+
+  function hideLogin() {
+    loginModal?.classList.add('hidden');
+    if (passwordInput) passwordInput.value = '';
+    loginError?.classList.add('hidden');
+  }
+
+  function checkSession() {
+    if (localStorage.getItem('admin_session') === 'true') {
+      composeWindow?.classList.remove('hidden');
+    } else {
+      composeWindow?.classList.add('hidden');
+    }
+  }
+
+  // Secret Trigger 1: Double-click profile photos
+  document.querySelectorAll('.profile-photo, .footer-mascot').forEach(img => {
+    img.addEventListener('dblclick', showLogin);
+  });
+
+  // Secret Trigger 2: Keyboard Shortcut (Ctrl+Shift+L)
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'L') {
+      e.preventDefault();
+      showLogin();
+    }
+  });
+
+  // Login Logic
+  loginSubmit?.addEventListener('click', async () => {
+    const input = passwordInput.value;
+    const hashed = await sha256(input);
+    
+    if (hashed === PASS_HASH) {
+      localStorage.setItem('admin_session', 'true');
+      hideLogin();
+      checkSession();
+      alert('Welcome back, Admin! 🔓');
+    } else {
+      loginError?.classList.remove('hidden');
+      passwordInput.value = '';
+    }
+  });
+
+  loginCancel?.addEventListener('click', hideLogin);
+  closeLogin?.addEventListener('click', hideLogin);
+
+  // Allow Enter key to submit
+  passwordInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') loginSubmit.click();
+  });
+
+  checkSession();
 }
