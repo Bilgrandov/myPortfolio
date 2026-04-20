@@ -1,8 +1,3 @@
-/* ========================================
-   ★ OSAKA'S WEB DEV CORNER ★
-   XP.css Theme Overrides & Custom Styles
-   ======================================== */
-
 @import url('https://fonts.googleapis.com/css2?family=VT323&family=Kosugi+Maru&display=swap');
 
 :root {
@@ -253,8 +248,13 @@ img {
 }
 
 @keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 /* === Skills Page === */
@@ -277,7 +277,9 @@ img {
   transition: background 0.15s;
 }
 
-.skill-item:hover { background: rgba(49, 104, 213, 0.08); }
+.skill-item:hover {
+  background: rgba(49, 104, 213, 0.08);
+}
 
 .skill-item img,
 .skill-item svg {
@@ -465,20 +467,57 @@ img {
 
 /* === Responsive === */
 @media (max-width: 640px) {
-  body { padding: 10px 10px 50px; }
-  .home-content { flex-direction: column; align-items: center; }
-  .home-mascot img { width: 140px; height: 140px; }
-  .home-stats { flex-direction: column; }
-  .skills-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); }
-  .project-body { flex-direction: column; }
+  body {
+    padding: 10px 10px 50px;
+  }
+
+  .home-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .home-mascot img {
+    width: 140px;
+    height: 140px;
+  }
+
+  .home-stats {
+    flex-direction: column;
+  }
+
+  .skills-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+
+  .project-body {
+    flex-direction: column;
+  }
 
   /* Taskbar: hide Start button and clock, show only icons */
-  .start-btn { display: none; }
-  .taskbar-divider { display: none; }
-  .taskbar-link span:not(.link-icon) { display: none; }
-  .taskbar-clock { display: none; }
-  .taskbar-links { justify-content: center; gap: 4px; }
-  .taskbar-link { padding: 3px 10px; }
+  .start-btn {
+    display: none;
+  }
+
+  .taskbar-divider {
+    display: none;
+  }
+
+  .taskbar-link span:not(.link-icon) {
+    display: none;
+  }
+
+  .taskbar-clock {
+    display: none;
+  }
+
+  .taskbar-links {
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .taskbar-link {
+    padding: 3px 10px;
+  }
 
   /* Explorer: stack vertically on mobile */
   .explorer-container {
@@ -587,8 +626,15 @@ ul.tree-view li {
   text-overflow: ellipsis;
 }
 
-ul.tree-view li:hover { background: #3168d2; color: #fff; }
-ul.tree-view li.active { background: #000080; color: #fff; }
+ul.tree-view li:hover {
+  background: #3168d2;
+  color: #fff;
+}
+
+ul.tree-view li.active {
+  background: #000080;
+  color: #fff;
+}
 
 ul.tree-view li.folder {
   font-weight: bold;
@@ -638,8 +684,16 @@ ul.tree-view li.folder {
   border-color: #d2e2f9;
 }
 
-.explorer-index-item .title { font-weight: bold; color: #003399; }
-.explorer-index-item .snippet { font-size: 12px; color: #666; margin-top: 4px; }
+.explorer-index-item .title {
+  font-weight: bold;
+  color: #003399;
+}
+
+.explorer-index-item .snippet {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
 
 /* Pagination in Content */
 .content-pagination {
@@ -650,10 +704,14 @@ ul.tree-view li.folder {
   justify-content: space-between;
 }
 
-.content-pagination button { min-width: 100px; }
+.content-pagination button {
+  min-width: 100px;
+}
 
 /* Markdown rendering in post body */
-.post-body h1, .post-body h2, .post-body h3 {
+.post-body h1,
+.post-body h2,
+.post-body h3 {
   color: #003399;
   margin-top: 15px;
   margin-bottom: 5px;
@@ -673,7 +731,8 @@ ul.tree-view li.folder {
   border-radius: 3px;
 }
 
-.post-body ul, .post-body ol {
+.post-body ul,
+.post-body ol {
   padding-left: 20px;
   margin: 8px 0;
 }
