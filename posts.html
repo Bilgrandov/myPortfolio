@@ -7,14 +7,14 @@
   <title>★ Bilgrandov's Tech Corner ★ ~ Posts</title>
   <link rel="stylesheet" href="https://unpkg.com/xp.css">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 </head>
 <body>
   <canvas id="sparkle-canvas" aria-hidden="true"></canvas>
 
   <div class="page-container">
     <!-- New Post Window (Admin Only) -->
-    <div id="admin-compose-window" class="window main-window hidden" style="margin-bottom: 16px;">
+    <div id="admin-compose-window" class="window main-window hidden" hidden style="margin-bottom: 16px; display: none;">
       <div class="title-bar">
         <div class="title-bar-text">📝 New Post — compose.exe</div>
         <div class="title-bar-controls">
@@ -44,37 +44,61 @@
       </div>
     </div>
 
-    <!-- Posts List Window -->
+    <!-- Posts Explorer Window -->
     <div class="window main-window">
       <div class="title-bar">
-        <div class="title-bar-text">📋 All Posts — blog_feed.dat</div>
+        <div class="title-bar-text">📂 Explorer — C:\MyDocuments\Blog_Posts</div>
         <div class="title-bar-controls">
           <button aria-label="Minimize"></button>
           <button aria-label="Maximize"></button>
           <button aria-label="Close"></button>
         </div>
       </div>
-      <div class="window-body">
-        <ul role="tablist" class="filter-tabs">
-          <li role="tab" class="active" data-filter="all"><a href="#all">All Posts</a></li>
-          <li role="tab" data-filter="journal"><a href="#journal">Journal</a></li>
-          <li role="tab" data-filter="blog"><a href="#blog">Blog</a></li>
-        </ul>
+      <div class="window-body" style="padding: 0;">
+        <div class="explorer-container">
+          <!-- Sidebar: Navigation Tree -->
+          <div class="explorer-sidebar">
+            <div class="search-container">
+              <input type="text" id="post-search" placeholder="Search posts...">
+            </div>
+            <div class="tree-container">
+              <ul class="tree-view" id="posts-tree">
+                <!-- Tree items will be injected here -->
+                <li>Loading...</li>
+              </ul>
+            </div>
+          </div>
 
-        <div class="posts-list" id="posts-list">
-          <!-- Posts will be injected here -->
-          <p class="no-posts">Loading posts... ⌛</p>
-        </div>
-
-        <div class="pagination-bar" id="pagination-controls">
-          <button id="prev-page" disabled>◀ Prev</button>
-          <span id="page-info">Page 1 of 1</span>
-          <button id="next-page" disabled>Next ▶</button>
+          <!-- Main Content: Post Viewer -->
+          <div class="explorer-content" id="post-viewer">
+            <div class="explorer-index" id="explorer-index">
+              <h2>Select a post to read</h2>
+              <p>Or browse the latest below:</p>
+              <div id="index-posts-list">
+                <!-- Index items will be injected here -->
+              </div>
+            </div>
+            <div class="explorer-post hidden" id="single-post-view">
+              <div class="explorer-post-header">
+                <h2 id="view-title">Post Title</h2>
+                <div class="explorer-post-meta">
+                  <span id="view-date">Date</span> • <span id="view-category">Category</span>
+                </div>
+              </div>
+              <div class="post-body" id="view-content">
+                <!-- Markdown content here -->
+              </div>
+              <div class="content-pagination">
+                <button id="nav-prev">◀ Previous</button>
+                <button id="nav-next">Next ▶</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="window-footer">
         <span><img src="assets/profile.jpg" class="footer-mascot" alt=""><span id="post-count">0</span> items total</span>
-        <span>～ Web Dev Journaling ～</span>
+        <span>～ Computer\Blog_Posts ～</span>
       </div>
     </div>
   </div>
