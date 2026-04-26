@@ -137,10 +137,8 @@ function animateCount(el, target) {
 
 /* --- Journaling & Blog --- */
 let allPostsData = [];
-async function initPosts() {
-  const treeEl = document.getElementById('posts-tree');
-  if (!treeEl) return;
-  
+
+async function ensurePostsFetched() {
   if (allPostsData.length === 0) {
     try {
       const response = await fetch('data/posts.json');
@@ -153,6 +151,13 @@ async function initPosts() {
       ];
     }
   }
+}
+
+async function initPosts() {
+  const treeEl = document.getElementById('posts-tree');
+  if (!treeEl) return;
+  
+  await ensurePostsFetched();
 
   function renderTree() {
     treeEl.innerHTML = '';
@@ -239,6 +244,9 @@ async function initPosts() {
 async function initLatestPostsTeaser() {
   const container = document.getElementById('latest-posts-container');
   if (!container) return;
+  
+  await ensurePostsFetched();
+  
   const posts = allPostsData.length ? allPostsData : [];
   const latest = posts.slice(0, 2);
   if (latest.length === 0) return;
