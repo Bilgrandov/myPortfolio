@@ -234,6 +234,29 @@ async function initPosts() {
       }
     }
   }
+  // Setup Navigation Buttons
+  const btnHome = document.getElementById('nav-home');
+  const btnPrev = document.getElementById('nav-prev');
+  const btnNext = document.getElementById('nav-next');
+  
+  if (btnHome) btnHome.addEventListener('click', () => window.location.hash = '');
+  
+  if (btnPrev || btnNext) {
+    const navigate = (direction) => {
+      const hash = window.location.hash;
+      if (!hash.startsWith('#post-')) return;
+      const id = parseInt(hash.replace('#post-', ''), 10);
+      const currIdx = allPostsData.findIndex(p => p.id === id);
+      if (currIdx === -1) return;
+      
+      const newIdx = currIdx + direction;
+      if (newIdx >= 0 && newIdx < allPostsData.length) {
+        window.location.hash = `post-${allPostsData[newIdx].id}`;
+      }
+    };
+    if (btnPrev) btnPrev.addEventListener('click', () => navigate(1)); // +1 is older post because sorted by date desc
+    if (btnNext) btnNext.addEventListener('click', () => navigate(-1)); // -1 is newer post
+  }
 
   renderTree();
   renderContentpane();
