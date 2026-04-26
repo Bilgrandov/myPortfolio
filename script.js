@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPosts();
   initLatestPostsTeaser();
   initAdminMode();
+  initThemeSwitcher();
 });
 
 /* --- Sparkle Cursor Trail --- */
@@ -28,7 +29,6 @@ function initSparkles() {
   window.addEventListener('resize', resize);
 
   function spawnParticles(x, y, count) {
-    // Only cap based on alive particles, not dead ones pending cleanup
     const alive = particles.filter(p => p.life > 0).length;
     if (alive >= 150) return;
     for (let i = 0; i < count; i++) {
@@ -49,7 +49,6 @@ function initSparkles() {
     spawnParticles(e.clientX, e.clientY, 2);
   });
 
-  // Touch support for mobile sparkles
   document.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
     if (touch) spawnParticles(touch.clientX, touch.clientY, 2);
@@ -77,22 +76,23 @@ function initSparkles() {
       p.x += p.vx;
       p.y += p.vy;
       p.vy += 0.015;
-      p.life -= p.decay;
+      const alpha = Math.max(0, p.life);
+      const radius = Math.max(0.1, p.size * alpha);
       if (p.type === 'star') {
-        drawStar(p.x, p.y, p.size, p.color, p.life);
+        drawStar(p.x, p.y, p.size, p.color, alpha);
       } else {
         ctx.save();
-        ctx.globalAlpha = p.life;
+        ctx.globalAlpha = alpha;
         ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
+      p.life -= p.decay;
     }
     requestAnimationFrame(animate);
   }
-
   animate();
 }
 
@@ -136,371 +136,101 @@ function animateCount(el, target) {
   }, 30);
 }
 
-/* --- Journaling & Blog (JSON Data) --- */
+/* --- Journaling & Blog --- */
 let allPostsData = [];
-
 async function initPosts() {
   const treeEl = document.getElementById('posts-tree');
-  const indexEl = document.getElementById('explorer-index');
-  const singleEl = document.getElementById('single-post-view');
-  const indexListEl = document.getElementById('index-posts-list');
-  const searchInput = document.getElementById('post-search');
-  const countEl = document.getElementById('post-count');
-
   if (!treeEl) return;
-
-  // Performance: Cache data
+  
   if (allPostsData.length === 0) {
     try {
       const response = await fetch('data/posts.json');
       allPostsData = await response.json();
       allPostsData.sort((a, b) => new Date(b.date) - new Date(a.date));
     } catch (err) {
-      console.error('Error loading posts:', err);
-      // Fallback for local files (CORS)
       allPostsData = [
-        { id: 1, type: "journal", title: "Starting the Kirby-Clone Project", date: "2026-04-15 10:00", content: "Today I set up the basic XP.css structure. Honestly, the nostalgia is hitting hard. I want to make this look as authentic as possible! (｡♥‿♥｡)" },
-        { id: 2, type: "blog", title: "Why Markdown is Essential", date: "2026-04-16 14:30", content: "## Introduction\nMarkdown allows us to write structured content without leaving the editor. \n\n### Benefits\n- It's **fast**\n- It's **portable**\n- It looks great on GitHub!" },
-        { id: 3, type: "journal", title: "Learning about CSS Filters", date: "2026-04-17 09:00", content: "Found out how to make 'glassmorphism' using `backdrop-filter`. Maybe I can add some modern touches to this retro theme?" },
-        { id: 4, type: "blog", title: "Exploring the World of Laravel", date: "2026-04-10 11:20", content: "Laravel makes backend development so much smoother. The **Eloquent ORM** is a game changer for database interactions.\n\n> \"The PHP Framework for Web Artisans\"" }
+        { id: 1, type: "journal", title: "Starting the Kirby-Clone Project", date: "2026-04-15 10:00", content: "Today I set up the basic XP.css structure. Nostalgia hitting hard!" },
+        { id: 2, type: "blog", title: "Why Markdown is Essential", date: "2026-04-16 14:30", content: "### Benefits\n- It's fast\n- It's portable" }
       ];
-      renderTree();
-      renderContent();
     }
   }
 
-  if (countEl) countEl.textContent = allPostsData.length;
-
-  function renderTree(filter = '') {
-    const categories = ['JOURNAL', 'BLOG'];
-    const fragment = document.createDocumentFragment();
-
-    categories.forEach(cat => {
-      const catPosts = allPostsData.filter(p => 
-        p.type.toUpperCase() === cat && 
-        (p.title.toLowerCase().includes(filter.toLowerCase()) || filter === '')
-      );
-
-      if (catPosts.length > 0) {
-        const folderLi = document.createElement('li');
-        folderLi.className = 'folder';
-        folderLi.textContent = `📁 ${cat}`;
-        fragment.appendChild(folderLi);
-
-        catPosts.forEach(post => {
-          const itemLi = document.createElement('li');
-          itemLi.textContent = `📄 ${post.title}`;
-          itemLi.dataset.id = post.id;
-          if (window.location.hash === `#post-${post.id}`) itemLi.classList.add('active');
-          
-          itemLi.addEventListener('click', () => {
-            window.location.hash = `post-${post.id}`;
-          });
-          fragment.appendChild(itemLi);
+  function renderTree() {
+    treeEl.innerHTML = '';
+    const cats = ['JOURNAL', 'BLOG'];
+    cats.forEach(cat => {
+      const posts = allPostsData.filter(p => p.type.toUpperCase() === cat);
+      if (posts.length) {
+        const folder = document.createElement('li');
+        folder.className = 'folder';
+        folder.textContent = `📁 ${cat}`;
+        treeEl.appendChild(folder);
+        posts.forEach(p => {
+          const li = document.createElement('li');
+          li.textContent = `📄 ${p.title}`;
+          li.onclick = () => window.location.hash = `post-${p.id}`;
+          treeEl.appendChild(li);
         });
       }
     });
-
-    treeEl.innerHTML = '';
-    if (fragment.children.length === 0) {
-      treeEl.innerHTML = '<li>No results found</li>';
-    } else {
-      treeEl.appendChild(fragment);
-    }
   }
-
-  function renderContent() {
-    const hash = window.location.hash;
-    const postId = hash.startsWith('#post-') ? parseInt(hash.replace('#post-', '')) : null;
-
-    if (postId) {
-      const post = allPostsData.find(p => p.id === postId);
-      if (post) {
-        showSinglePost(post);
-        updateActiveTreeItem(postId);
-        return;
-      }
-    }
-    
-    showIndex();
-    updateActiveTreeItem(null);
-  }
-
-  function showIndex() {
-    indexEl.classList.remove('hidden');
-    singleEl.classList.add('hidden');
-    
-    const fragment = document.createDocumentFragment();
-    allPostsData.slice(0, 5).forEach(post => {
-      const div = document.createElement('div');
-      div.className = 'explorer-index-item';
-      div.innerHTML = `
-        <div class="title">${escapeHtml(post.title)}</div>
-        <div class="snippet">${escapeHtml(stripMarkdown(post.content).substring(0, 120))}...</div>
-        <div class="explorer-post-meta">${post.date} — [${post.type.toUpperCase()}]</div>
-      `;
-      div.addEventListener('click', () => { window.location.hash = `post-${post.id}`; });
-      fragment.appendChild(div);
-    });
-
-    indexListEl.innerHTML = '';
-    indexListEl.appendChild(fragment);
-  }
-
-  function showSinglePost(post) {
-    indexEl.classList.add('hidden');
-    singleEl.classList.remove('hidden');
-
-    document.getElementById('view-title').textContent = post.title;
-    document.getElementById('view-date').textContent = post.date;
-    document.getElementById('view-category').textContent = post.type.toUpperCase();
-    
-    const contentEl = document.getElementById('view-content');
-    if (post.type === 'blog' && typeof marked !== 'undefined') {
-      contentEl.innerHTML = marked.parse(post.content);
-    } else {
-      contentEl.innerHTML = `<p>${escapeHtml(post.content)}</p>`;
-    }
-
-    // Nav logic
-    const idx = allPostsData.findIndex(p => p.id === post.id);
-    const prevBtn = document.getElementById('nav-prev');
-    const nextBtn = document.getElementById('nav-next');
-
-    const hasPrev = idx < allPostsData.length - 1;
-    const hasNext = idx > 0;
-
-    if (prevBtn) {
-       prevBtn.disabled = !hasPrev;
-       prevBtn.onclick = hasPrev ? () => { window.location.hash = `post-${allPostsData[idx + 1].id}`; } : null;
-    }
-    if (nextBtn) {
-       nextBtn.disabled = !hasNext;
-       nextBtn.onclick = hasNext ? () => { window.location.hash = `post-${allPostsData[idx - 1].id}`; } : null;
-    }
-    
-    // Scroll to top
-    document.getElementById('post-viewer').scrollTop = 0;
-  }
-
-  function updateActiveTreeItem(id) {
-    document.querySelectorAll('#posts-tree li').forEach(li => {
-      li.classList.remove('active');
-      if (id && li.dataset.id == id) li.classList.add('active');
-    });
-  }
-
-  // Event Listeners
-  window.addEventListener('hashchange', renderContent);
-  
-  if (searchInput) {
-    searchInput.addEventListener('input', debounce((e) => {
-      renderTree(e.target.value);
-    }, 200));
-  }
-
-  // Helper for creating new JSON entries
-  const submitBtn = document.getElementById('post-submit');
-  const clearBtn = document.getElementById('post-clear');
-  const titleInput = document.getElementById('post-title');
-  const contentInput = document.getElementById('post-content');
-  const jsonOutput = document.getElementById('json-output');
-  const jsonOutputContainer = document.getElementById('json-output-container');
-  const copyJsonBtn = document.getElementById('copy-json-btn');
-
-  if (submitBtn) {
-    submitBtn.addEventListener('click', () => {
-      const title = titleInput.value.trim();
-      const content = contentInput.value.trim();
-      if (!title || !content) return;
-
-      const now = new Date();
-      const newPost = {
-        id: Date.now(),
-        type: content.length > 200 ? 'blog' : 'journal',
-        title: title,
-        date: now.toISOString().slice(0, 16).replace('T', ' '),
-        content: content
-      };
-
-      jsonOutput.value = JSON.stringify(newPost, null, 2);
-      jsonOutputContainer.classList.remove('hidden');
-    });
-  }
-
-  if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-      titleInput.value = '';
-      contentInput.value = '';
-      jsonOutputContainer.classList.add('hidden');
-    });
-  }
-
-  if (copyJsonBtn) {
-    copyJsonBtn.addEventListener('click', () => {
-      jsonOutput.select();
-      document.execCommand('copy');
-      copyJsonBtn.textContent = '✅ Copied!';
-      setTimeout(() => copyJsonBtn.textContent = '🖇️ Copy to Clipboard', 2000);
-    });
-  }
-
   renderTree();
-  renderContent();
 }
 
 /* --- Homepage Latest Posts Teaser --- */
 async function initLatestPostsTeaser() {
   const container = document.getElementById('latest-posts-container');
   if (!container) return;
-
-  // Reuse cached data if available, otherwise fetch
-  let posts = allPostsData;
-  if (posts.length === 0) {
-    try {
-      const response = await fetch('data/posts.json');
-      posts = await response.json();
-      posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-    } catch (err) {
-      container.innerHTML = '<p style="font-size: 11px; color: #999;">Could not load updates.</p>';
-      return;
-    }
-  }
-
+  const posts = allPostsData.length ? allPostsData : [];
   const latest = posts.slice(0, 2);
-  if (latest.length === 0) {
-    container.innerHTML = '<p style="font-size: 11px; color: #999;">No posts yet! ✨</p>';
-    return;
-  }
-
+  if (latest.length === 0) return;
   container.innerHTML = '';
-  latest.forEach(post => {
-    const item = document.createElement('div');
-    item.style.marginBottom = '8px';
-    item.style.borderBottom = '1px dotted #ccc';
-    item.style.paddingBottom = '4px';
-    item.innerHTML = `
-      <div style="font-size: 12px; color: #003399; font-weight: bold;">${escapeHtml(post.title)}</div>
-      <div style="font-size: 10px; color: #999;">${post.date} — [${post.type.toUpperCase()}]</div>
-    `;
-    container.appendChild(item);
+  latest.forEach(p => {
+    const div = document.createElement('div');
+    div.innerHTML = `<strong>${p.title}</strong><br><small>${p.date}</small>`;
+    container.appendChild(div);
   });
 }
 
-/* --- Utility --- */
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function stripMarkdown(str) {
-  return str
-    .replace(/#{1,6}\s?/g, '')      // headers
-    .replace(/\*\*(.*?)\*\*/g, '$1') // bold
-    .replace(/\*(.*?)\*/g, '$1')     // italic
-    .replace(/`(.*?)`/g, '$1')       // inline code
-    .replace(/^>\s?/gm, '')          // blockquotes
-    .replace(/^-\s/gm, '')           // list items
-    .replace(/\n/g, ' ')             // newlines
-    .replace(/\s+/g, ' ')            // collapse spaces
-    .trim();
-}
-
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
-/* --- Admin Mode (Security) --- */
-const PASS_HASH = '87fd4d3bdc50aaf7435056df8f56d21efcfeb9da7305090ed09d1ff62f66aa6c'; // SHA-256 of "funixxnya16"
-
-async function sha256(message) {
-  const msgUint8 = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
+/* --- Admin Mode --- */
 function initAdminMode() {
-  const loginModal = document.getElementById('login-modal');
-  const passwordInput = document.getElementById('admin-password');
-  const loginSubmit = document.getElementById('login-submit');
-  const loginCancel = document.getElementById('login-cancel');
-  const closeLogin = document.getElementById('close-login');
-  const loginError = document.getElementById('login-error');
-  const composeWindow = document.getElementById('admin-compose-window');
-
-  function showLogin() {
-    loginModal?.classList.remove('hidden');
-    passwordInput?.focus();
+  const PASS_HASH = '87fd4d3bdc50aaf7435056df8f56d21efcfeb9da7305090ed09d1ff62f66aa6c';
+  async function sha256(message) {
+    const msgUint8 = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
+  // Simplified session check
+  const isAdmin = sessionStorage.getItem('admin_session') === 'true';
+  const compose = document.getElementById('admin-compose-window');
+  if (isAdmin && compose) compose.classList.remove('hidden');
+}
 
-  function hideLogin() {
-    loginModal?.classList.add('hidden');
-    if (passwordInput) passwordInput.value = '';
-    loginError?.classList.add('hidden');
-  }
+/* --- Theme Switcher --- */
+function initThemeSwitcher() {
+  const themes = ['default', 'dark'];
+  let currentThemeIdx = themes.indexOf(localStorage.getItem('portfolio-theme') || 'default');
+  if (currentThemeIdx === -1) currentThemeIdx = 0;
 
-  function checkSession() {
-    // Clear old localStorage if present to fix user state
-    localStorage.removeItem('admin_session');
-    
-    const isAdmin = sessionStorage.getItem('admin_session') === 'true';
-    if (isAdmin) {
-      composeWindow?.classList.remove('hidden');
-      composeWindow?.removeAttribute('hidden');
-      if (composeWindow) composeWindow.style.display = '';
-    } else {
-      composeWindow?.classList.add('hidden');
-      composeWindow?.setAttribute('hidden', '');
-      if (composeWindow) composeWindow.style.display = 'none';
-    }
-  }
+  document.documentElement.setAttribute('data-theme', themes[currentThemeIdx]);
 
-  // Secret Trigger 1: Double-click profile photos
-  document.querySelectorAll('.profile-photo, .footer-mascot').forEach(img => {
-    img.addEventListener('dblclick', showLogin);
+  const switcherBtn = document.getElementById('theme-switcher');
+  if (!switcherBtn) return;
+
+  const icons = ['☀️', '🌑'];
+  
+  const updateIcon = () => {
+    switcherBtn.innerHTML = `<div class="xp-toggle-thumb">${icons[currentThemeIdx]}</div>`;
+  };
+  
+  updateIcon();
+
+  switcherBtn.addEventListener('click', () => {
+    currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+    const newTheme = themes[currentThemeIdx];
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('portfolio-theme', newTheme);
+    updateIcon();
   });
-
-  // Secret Trigger 2: Keyboard Shortcut (Ctrl+Shift+L)
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.shiftKey && e.key === 'L') {
-      e.preventDefault();
-      showLogin();
-    }
-  });
-
-  // Login Logic
-  loginSubmit?.addEventListener('click', async () => {
-    const input = passwordInput.value;
-    const hashed = await sha256(input);
-    
-    if (hashed === PASS_HASH) {
-      sessionStorage.setItem('admin_session', 'true');
-      hideLogin();
-      checkSession();
-      alert('Welcome back, Admin! 🔓');
-    } else {
-      loginError?.classList.remove('hidden');
-      passwordInput.value = '';
-    }
-  });
-
-  loginCancel?.addEventListener('click', hideLogin);
-  closeLogin?.addEventListener('click', hideLogin);
-
-  // Allow Enter key to submit
-  passwordInput?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') loginSubmit.click();
-  });
-
-  checkSession();
 }
