@@ -143,6 +143,29 @@
     </div>
   </div>
 
+  <!-- Login Modal (Hidden) -->
+  <div id="login-modal" class="login-overlay hidden">
+    <div class="window" style="width: 300px;">
+      <div class="title-bar">
+        <div class="title-bar-text">🔐 Admin Login</div>
+        <div class="title-bar-controls">
+          <button aria-label="Close" id="close-login"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="field-row-stacked">
+          <label for="admin-password">Password:</label>
+          <input id="admin-password" type="password" style="width: 100%;">
+        </div>
+        <div class="field-row" style="justify-content: flex-end; margin-top: 10px;">
+          <button id="login-submit">Login</button>
+          <button id="login-cancel">Cancel</button>
+        </div>
+        <p id="login-error" class="hidden" style="color: red; font-size: 11px; margin-top: 8px;">Incorrect password! ❌</p>
+      </div>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>

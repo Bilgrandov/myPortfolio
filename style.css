@@ -911,6 +911,7 @@ ul.tree-view li.folder {
 
 /* === JSON Output (Admin) === */
 #json-output {
+  color: #000;
   width: 100%;
   background: #eee;
   border: 1px inset #888;

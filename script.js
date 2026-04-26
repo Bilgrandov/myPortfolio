@@ -1,5 +1,4 @@
 /* ========================================
-   ★ OSAKA'S WEB DEV CORNER ★
    XP.css Multipage Interactive JS
    ======================================== */
 
@@ -173,8 +172,67 @@ async function initPosts() {
         });
       }
     });
+
+    const postCount = document.getElementById('post-count');
+    if (postCount) postCount.textContent = allPostsData.length;
   }
+  
+  function renderContentpane() {
+    const hash = window.location.hash;
+    const indexView = document.getElementById('explorer-index');
+    const singleView = document.getElementById('single-post-view');
+    const idxList = document.getElementById('index-posts-list');
+    
+    // Render index list
+    if (idxList && idxList.children.length === 0) {
+      idxList.innerHTML = '';
+      allPostsData.forEach(p => {
+        const item = document.createElement('div');
+        item.style.cursor = 'pointer';
+        item.style.color = 'var(--text-color, #000)';
+        item.style.textDecoration = 'underline';
+        item.style.marginBottom = '8px';
+        item.innerHTML = `📄 <strong>${p.title}</strong> — <small>${p.date}</small>`;
+        item.onclick = () => window.location.hash = `post-${p.id}`;
+        idxList.appendChild(item);
+      });
+    }
+
+    if (!hash || !hash.startsWith('#post-')) {
+      if (indexView) indexView.classList.remove('hidden');
+      if (singleView) singleView.classList.add('hidden');
+      return;
+    }
+
+    const id = parseInt(hash.replace('#post-', ''), 10);
+    const post = allPostsData.find(p => p.id === id);
+
+    if (post) {
+      if (indexView) indexView.classList.add('hidden');
+      if (singleView) singleView.classList.remove('hidden');
+      
+      const titleEl = document.getElementById('view-title');
+      const dateEl = document.getElementById('view-date');
+      const catEl = document.getElementById('view-category');
+      const contentEl = document.getElementById('view-content');
+      
+      if (titleEl) titleEl.textContent = post.title;
+      if (dateEl) dateEl.textContent = post.date;
+      if (catEl) catEl.textContent = post.type.toUpperCase();
+      
+      if (contentEl) {
+        if (typeof marked !== 'undefined') {
+          contentEl.innerHTML = marked.parse(post.content);
+        } else {
+          contentEl.innerText = post.content;
+        }
+      }
+    }
+  }
+
   renderTree();
+  renderContentpane();
+  window.addEventListener('hashchange', renderContentpane);
 }
 
 /* --- Homepage Latest Posts Teaser --- */
@@ -201,10 +259,120 @@ function initAdminMode() {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
-  // Simplified session check
+  
+  // Session check on load
   const isAdmin = sessionStorage.getItem('admin_session') === 'true';
   const compose = document.getElementById('admin-compose-window');
-  if (isAdmin && compose) compose.classList.remove('hidden');
+  
+  if (isAdmin && compose) {
+    compose.classList.remove('hidden');
+    compose.removeAttribute('hidden');
+    compose.style.display = 'block'; // Fallback if hidden class isn't enough
+  }
+
+  // Hidden Keyboard Shortcut (Ctrl + Shift + L)
+  const loginModal = document.getElementById('login-modal');
+  const loginPass = document.getElementById('admin-password');
+  const loginError = document.getElementById('login-error');
+
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
+      if (loginModal) {
+        loginModal.classList.remove('hidden');
+        if (loginPass) {
+          loginPass.value = '';
+          setTimeout(() => loginPass.focus(), 50);
+        }
+        if (loginError) loginError.classList.add('hidden');
+      }
+    }
+  });
+
+  const closeLogin = () => {
+    if (loginModal) loginModal.classList.add('hidden');
+    if (loginPass) loginPass.value = '';
+    if (loginError) loginError.classList.add('hidden');
+  };
+
+  const submitLogin = async () => {
+    if (!loginPass) return;
+    const hash = await sha256(loginPass.value);
+    if (hash === PASS_HASH) {
+      sessionStorage.setItem('admin_session', 'true');
+      closeLogin();
+      alert("Access Granted: Admin Mode Activated");
+      if (compose) {
+        compose.classList.remove('hidden');
+        compose.removeAttribute('hidden');
+        compose.style.display = 'block';
+      }
+    } else {
+      if (loginError) loginError.classList.remove('hidden');
+    }
+  };
+
+  const btnCloseLogin = document.getElementById('close-login');
+  const btnCancelLogin = document.getElementById('login-cancel');
+  const btnSubmitLogin = document.getElementById('login-submit');
+
+  if (btnCloseLogin) btnCloseLogin.addEventListener('click', closeLogin);
+  if (btnCancelLogin) btnCancelLogin.addEventListener('click', closeLogin);
+  if (btnSubmitLogin) btnSubmitLogin.addEventListener('click', submitLogin);
+  if (loginPass) {
+    loginPass.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') submitLogin();
+    });
+  }
+
+  // Post Composer Logic
+  const btnSubmit = document.getElementById('post-submit');
+  const btnClear = document.getElementById('post-clear');
+  const btnCopy = document.getElementById('copy-json-btn');
+  const jsonContainer = document.getElementById('json-output-container');
+  const jsonOutput = document.getElementById('json-output');
+
+  if (btnSubmit) {
+    btnSubmit.addEventListener('click', () => {
+      const title = document.getElementById('post-title').value;
+      const content = document.getElementById('post-content').value;
+      if (!title || !content) return alert("Error: Title and Content are required.");
+      
+      const now = new Date();
+      const dateStr = now.getFullYear() + "-" + 
+                      String(now.getMonth()+1).padStart(2,'0') + "-" + 
+                      String(now.getDate()).padStart(2,'0') + " " + 
+                      String(now.getHours()).padStart(2,'0') + ":" + 
+                      String(now.getMinutes()).padStart(2,'0');
+      
+      const postObj = {
+        id: Date.now(), // Generate unique ID
+        type: "blog",
+        title: title,
+        date: dateStr,
+        content: content
+      };
+      
+      jsonOutput.value = "  " + JSON.stringify(postObj, null, 2).replace(/\n/g, "\n  ") + ",\n";
+      if (jsonContainer) jsonContainer.classList.remove('hidden');
+    });
+  }
+
+  if (btnClear) {
+    btnClear.addEventListener('click', () => {
+      document.getElementById('post-title').value = '';
+      document.getElementById('post-content').value = '';
+      if (jsonOutput) jsonOutput.value = '';
+      if (jsonContainer) jsonContainer.classList.add('hidden');
+    });
+  }
+
+  if (btnCopy) {
+    btnCopy.addEventListener('click', () => {
+      jsonOutput.select();
+      document.execCommand('copy');
+      alert("JSON array item copied correctly! Paste it at the top of your data/posts.json array.");
+    });
+  }
 }
 
 /* --- Theme Switcher --- */
