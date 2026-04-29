@@ -5,16 +5,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Bilgrandov Tech Corner — A retro Windows XP-styled web developer portfolio.">
+  <meta name="theme-color" content="#245edb">
   <title>Bilgrandov's Tech Corner ★ ~ Home</title>
-  <link rel="stylesheet" href="https://unpkg.com/xp.css">
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Kosugi+Maru&display=swap">
+  <link rel="stylesheet" href="assets/xp.css">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <div class="crt-overlay"></div>
+  <img src="assets/work_sticker.webp" class="work-badge" alt="Open to Work" width="130" height="130" loading="lazy">
   <canvas id="sparkle-canvas" aria-hidden="true"></canvas>
 
-  <div class="page-container">
+  <main class="page-container">
     <div class="window main-window">
       <div class="title-bar">
         <div class="title-bar-text">💫 Bilgrandov's Tech Corner — Home</div>
@@ -36,7 +42,7 @@
         <!-- About -->
         <div class="home-content">
           <div class="home-mascot">
-            <img src="assets/profile.jpg" alt="Bilgrandov" class="profile-photo">
+            <img src="assets/profile.jpg" alt="Bilgrandov" class="profile-photo" width="180" height="180">
             <p class="mascot-label">～ Bilgrandov ～</p>
           </div>
           <div class="home-text">
@@ -85,20 +91,20 @@
           <fieldset>
             <legend>📝 Latest Learnings</legend>
             <div id="latest-posts-container">
-              <p style="font-size: 11px; color: #999;">Fetching latest posts... ⌛</p>
+              <p class="loading-text">Fetching latest posts... ⌛</p>
             </div>
             <div style="text-align: right; margin-top: 8px;">
-              <a href="posts.html" style="font-size: 11px; color: #003399;">View all posts »</a>
+              <a href="posts.html" class="view-all-link">View all posts »</a>
             </div>
           </fieldset>
         </div>
       </div>
       <div class="window-footer">
-        <span><img src="assets/profile.jpg" class="footer-mascot" alt="">© 2026 Bilgrandov's Tech Corner</span>
+        <span><img src="assets/profile.jpg" class="footer-mascot" alt="" loading="lazy" width="24" height="24">© 2026 Bilgrandov's Tech Corner</span>
         <span>Made with ♡ &amp; HTML</span>
       </div>
     </div>
-  </div>
+  </main>
 
   <!-- Taskbar -->
   <nav class="taskbar">
@@ -117,7 +123,7 @@
     <div class="taskbar-clock" id="taskbar-clock">12:00</div>
   </nav>
 
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 
 </html>

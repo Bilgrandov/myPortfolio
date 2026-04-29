@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=VT323&family=Kosugi+Maru&display=swap');
+/* Fonts loaded via <link> in HTML head for performance */
 
 :root {
   --font-pixel: 'VT323', 'Courier New', monospace;
@@ -16,7 +16,7 @@
   --taskbar-bg: rgba(0, 5, 20, 0.9);
   --text-color: #e0e0e0;
   --accent-cyan: #39ff14;
-  --panel-bg: rgba(255, 255, 255, 0.05);
+
   --title-bar-bg: #245edb;
 }
 
@@ -35,9 +35,6 @@ html {
 body {
   font-family: var(--font-cute);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 20px 20px 70px;
   background-image: var(--bg-url);
   background-position: center;
@@ -58,10 +55,14 @@ img {
   inset: 0;
   z-index: 9998;
   pointer-events: none;
+  contain: strict;
 }
 
 /* === Page Layout === */
 .page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
@@ -1050,11 +1051,13 @@ ul.tree-view li.folder {
   height: 100%;
   /* RGB subpixel mask & Scanlines */
   background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
   z-index: 9999;
   background-size: 100% 2px, 3px 100%;
   pointer-events: none;
   opacity: 0.75;
+  will-change: transform;
+  contain: strict;
 }
 
 .crt-overlay::after {
@@ -1065,34 +1068,34 @@ ul.tree-view li.folder {
   left: 0;
   bottom: 0;
   right: 0;
-  /* Noise & Vignette */
-  background: radial-gradient(circle, rgba(18, 16, 16, 0) 35%, rgba(0, 0, 0, 0.45) 100%),
-              url("https://res.cloudinary.com/dyd911kmh/image/upload/v1640050215/noise_vpxeyy.png");
+  /* Noise & Vignette - CSS-only noise via SVG filter */
+  background: radial-gradient(circle, rgba(18, 16, 16, 0) 35%, rgba(0, 0, 0, 0.45) 100%);
   opacity: 0.1;
   z-index: 10000;
   pointer-events: none;
-  animation: crt-flicker 0.09s infinite, crt-noise 0.22s infinite;
+  animation: crt-flicker 0.15s infinite;
+  will-change: opacity;
 }
 
-/* Text Glow & RGB Shift */
-body {
-  text-shadow: 0.7px 0 0.7px rgba(255, 0, 0, 0.35), 
-               -0.7px 0 0.7px rgba(0, 0, 255, 0.35),
-               0 0 1.5px rgba(255, 255, 255, 0.15);
+/* Text Glow & RGB Shift - scoped to window-body for less paint area */
+.window-body {
+  text-shadow: 0.7px 0 0.7px rgba(255, 0, 0, 0.35),
+    -0.7px 0 0.7px rgba(0, 0, 255, 0.35),
+    0 0 1.5px rgba(255, 255, 255, 0.15);
 }
 
 @keyframes crt-flicker {
-  0% { opacity: 0.17; }
-  50% { opacity: 0.13; }
-  100% { opacity: 0.17; }
-}
+  0% {
+    opacity: 0.17;
+  }
 
-@keyframes crt-noise {
-  0%, 100% { background-position: 0 0; }
-  20% { background-position: 8% 8%; }
-  40% { background-position: -8% 12%; }
-  60% { background-position: 12% -8%; }
-  80% { background-position: -8% 8%; }
+  50% {
+    opacity: 0.13;
+  }
+
+  100% {
+    opacity: 0.17;
+  }
 }
 
 /* Subtle Screen Scanline Animation */
@@ -1109,9 +1112,72 @@ body {
   z-index: 10001;
   pointer-events: none;
   animation: crt-scan 13s linear infinite;
+  will-change: transform;
 }
 
 @keyframes crt-scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* === Work Badge Sticker === */
+.work-badge {
+  position: absolute;
+  bottom: 70px;
+  right: 10px;
+  width: 130px;
+  z-index: 10005;
+  transform: rotate(12deg);
+  cursor: pointer;
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.2));
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              opacity 0.3s ease;
+  pointer-events: auto;
+  opacity: 0.75;
+}
+
+.work-badge:hover {
+  transform: rotate(0deg) scale(1.2);
+  opacity: 1;
+}
+
+@media (max-width: 640px) {
+  .work-badge {
+    width: 85px;
+    bottom: 55px;
+    right: 8px;
+  }
+}
+
+/* === Utility Classes (moved from inline styles) === */
+.loading-text {
+  font-size: 11px;
+  color: #999;
+}
+
+.view-all-link {
+  font-size: 11px;
+  color: #003399;
+}
+
+[data-theme="dark"] .view-all-link {
+  color: var(--accent-cyan);
+}
+
+.contact-intro {
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.skill-icon-size {
+  font-size: 48px;
+}
+
+.skill-emoji-size {
+  font-size: 44px;
 }

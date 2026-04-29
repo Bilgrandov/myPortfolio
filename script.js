@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLatestPostsTeaser();
   initAdminMode();
   initThemeSwitcher();
+  initWorkBadge();
 });
 
 /* --- Sparkle Cursor Trail --- */
@@ -19,17 +20,23 @@ function initSparkles() {
   const ctx = canvas.getContext('2d');
   let particles = [];
   const colors = ['#00bdd6', '#d2e2f9', '#ff6b9d', '#ffe45e', '#87ceeb'];
+  const isMobile = window.innerWidth <= 640;
+  const MAX_PARTICLES = isMobile ? 80 : 150;
 
   function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   }
   resize();
-  window.addEventListener('resize', resize);
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 150);
+  });
 
   function spawnParticles(x, y, count) {
     const alive = particles.filter(p => p.life > 0).length;
-    if (alive >= 150) return;
+    if (alive >= MAX_PARTICLES) return;
     for (let i = 0; i < count; i++) {
       particles.push({
         x, y,
@@ -46,11 +53,13 @@ function initSparkles() {
 
   document.addEventListener('mousemove', (e) => {
     spawnParticles(e.clientX, e.clientY, 2);
+    ensureAnimating();
   });
 
   document.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
     if (touch) spawnParticles(touch.clientX, touch.clientY, 2);
+    ensureAnimating();
   }, { passive: true });
 
   function drawStar(cx, cy, size, color, alpha) {
@@ -68,9 +77,14 @@ function initSparkles() {
     ctx.restore();
   }
 
+  let animating = false;
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     particles = particles.filter(p => p.life > 0);
+    if (particles.length === 0) {
+      animating = false;
+      return;
+    }
     for (const p of particles) {
       p.x += p.vx;
       p.y += p.vy;
@@ -92,7 +106,13 @@ function initSparkles() {
     }
     requestAnimationFrame(animate);
   }
-  animate();
+
+  function ensureAnimating() {
+    if (!animating) {
+      animating = true;
+      requestAnimationFrame(animate);
+    }
+  }
 }
 
 /* --- Taskbar Clock --- */
@@ -399,9 +419,15 @@ function initAdminMode() {
 
   if (btnCopy) {
     btnCopy.addEventListener('click', () => {
-      jsonOutput.select();
-      document.execCommand('copy');
-      alert("JSON array item copied correctly! Paste it at the top of your data/posts.json array.");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(jsonOutput.value).then(() => {
+          alert("JSON array item copied correctly! Paste it at the top of your data/posts.json array.");
+        });
+      } else {
+        jsonOutput.select();
+        document.execCommand('copy');
+        alert("JSON array item copied correctly! Paste it at the top of your data/posts.json array.");
+      }
     });
   }
 }
@@ -432,4 +458,38 @@ function initThemeSwitcher() {
     localStorage.setItem('portfolio-theme', newTheme);
     updateIcon();
   });
+}
+
+/* --- Work Badge Pinned Position (Scroll-tracked) --- */
+function initWorkBadge() {
+  const badge = document.querySelector('.work-badge');
+  if (!badge) return;
+
+  function updatePosition() {
+    const isMobile = window.innerWidth <= 640;
+    const bottomOffset = isMobile ? 55 : 70;
+    const rightOffset = isMobile ? 8 : 10;
+    const scrollY = window.scrollY || window.pageYOffset;
+    const viewH = window.innerHeight;
+
+    badge.style.position = 'absolute';
+    badge.style.top = (scrollY + viewH - bottomOffset - badge.offsetHeight) + 'px';
+    badge.style.right = rightOffset + 'px';
+    badge.style.bottom = 'auto';
+  }
+
+  updatePosition();
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(() => {
+        updatePosition();
+        ticking = false;
+      });
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', updatePosition);
 }
