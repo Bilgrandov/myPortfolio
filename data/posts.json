@@ -26,5 +26,12 @@
     "title": "Exploring the World of Laravel",
     "date": "2026-04-10 11:20",
     "content": "Laravel makes backend development so much smoother. The **Eloquent ORM** is a game changer for database interactions.\n\n> \"The PHP Framework for Web Artisans\"\n\nCan't wait to build more with it."
+  },
+  {
+    "id": 5,
+    "type": "cp",
+    "title": "LeetCode: Sum of 1D Array",
+    "date": "2026-05-11 2:00",
+    "file": "data/posts/leetcode-id-array.md"
   }
 ]

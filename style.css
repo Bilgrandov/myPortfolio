@@ -899,6 +899,22 @@ ul.tree-view li.folder {
   border-radius: 3px;
 }
 
+.post-body pre {
+  background: #282c34;
+  color: #abb2bf;
+  padding: 12px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 10px 0;
+  border: 1px solid #1e2227;
+}
+
+.post-body pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
 .post-body ul,
 .post-body ol {
   padding-left: 20px;
@@ -1136,7 +1152,7 @@ ul.tree-view li.folder {
   cursor: pointer;
   filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.2));
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-              opacity 0.3s ease;
+    opacity 0.3s ease;
   pointer-events: auto;
   opacity: 0.75;
 }

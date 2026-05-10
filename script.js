@@ -176,12 +176,12 @@ async function ensurePostsFetched() {
 async function initPosts() {
   const treeEl = document.getElementById('posts-tree');
   if (!treeEl) return;
-  
+
   await ensurePostsFetched();
 
   function renderTree() {
     treeEl.innerHTML = '';
-    const cats = ['JOURNAL', 'BLOG'];
+    const cats = ['JOURNAL', 'BLOG', 'CP'];
     cats.forEach(cat => {
       const posts = allPostsData.filter(p => p.type.toUpperCase() === cat);
       if (posts.length) {
@@ -201,13 +201,13 @@ async function initPosts() {
     const postCount = document.getElementById('post-count');
     if (postCount) postCount.textContent = allPostsData.length;
   }
-  
+
   function renderContentpane() {
     const hash = window.location.hash;
     const indexView = document.getElementById('explorer-index');
     const singleView = document.getElementById('single-post-view');
     const idxList = document.getElementById('index-posts-list');
-    
+
     // Render index list
     if (idxList && idxList.children.length === 0) {
       idxList.innerHTML = '';
@@ -235,32 +235,49 @@ async function initPosts() {
     if (post) {
       if (indexView) indexView.classList.add('hidden');
       if (singleView) singleView.classList.remove('hidden');
-      
+
       const titleEl = document.getElementById('view-title');
       const dateEl = document.getElementById('view-date');
       const catEl = document.getElementById('view-category');
       const contentEl = document.getElementById('view-content');
-      
+
       if (titleEl) titleEl.textContent = post.title;
       if (dateEl) dateEl.textContent = post.date;
       if (catEl) catEl.textContent = post.type.toUpperCase();
-      
+
       if (contentEl) {
-        if (typeof marked !== 'undefined') {
-          contentEl.innerHTML = marked.parse(post.content);
+        // Fungsi pembantu agar kodenya tidak ditulis berulang-ulang
+        const renderText = (text) => {
+          if (typeof marked !== 'undefined') {
+            contentEl.innerHTML = marked.parse(text);
+          } else {
+            contentEl.innerText = text;
+          }
+        };
+
+        // Cek: Apakah post ini menggunakan file .md?
+        if (post.file) {
+          contentEl.innerHTML = '<p class="loading-text">Sedang memuat artikel...</p>';
+
+          fetch(post.file) // Pergi dan ambil file .md-nya
+            .then(response => response.text())
+            .then(text => renderText(text))
+            .catch(err => renderText("Gagal memuat artikel 😢"));
         } else {
-          contentEl.innerText = post.content;
+          // Jika pakai sistem lama (langsung dari posts.json)
+          renderText(post.content);
         }
       }
+
     }
   }
   // Setup Navigation Buttons
   const btnHome = document.getElementById('nav-home');
   const btnPrev = document.getElementById('nav-prev');
   const btnNext = document.getElementById('nav-next');
-  
+
   if (btnHome) btnHome.addEventListener('click', () => window.location.hash = '');
-  
+
   if (btnPrev || btnNext) {
     const navigate = (direction) => {
       const hash = window.location.hash;
@@ -268,7 +285,7 @@ async function initPosts() {
       const id = parseInt(hash.replace('#post-', ''), 10);
       const currIdx = allPostsData.findIndex(p => p.id === id);
       if (currIdx === -1) return;
-      
+
       const newIdx = currIdx + direction;
       if (newIdx >= 0 && newIdx < allPostsData.length) {
         window.location.hash = `post-${allPostsData[newIdx].id}`;
@@ -287,9 +304,9 @@ async function initPosts() {
 async function initLatestPostsTeaser() {
   const container = document.getElementById('latest-posts-container');
   if (!container) return;
-  
+
   await ensurePostsFetched();
-  
+
   const posts = allPostsData.length ? allPostsData : [];
   const latest = posts.slice(0, 2);
   if (latest.length === 0) return;
@@ -310,11 +327,11 @@ function initAdminMode() {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
-  
+
   // Session check on load
   const isAdmin = sessionStorage.getItem('admin_session') === 'true';
   const compose = document.getElementById('admin-compose-window');
-  
+
   if (isAdmin && compose) {
     compose.classList.remove('hidden');
     compose.removeAttribute('hidden');
@@ -387,14 +404,14 @@ function initAdminMode() {
       const title = document.getElementById('post-title').value;
       const content = document.getElementById('post-content').value;
       if (!title || !content) return alert("Error: Title and Content are required.");
-      
+
       const now = new Date();
-      const dateStr = now.getFullYear() + "-" + 
-                      String(now.getMonth()+1).padStart(2,'0') + "-" + 
-                      String(now.getDate()).padStart(2,'0') + " " + 
-                      String(now.getHours()).padStart(2,'0') + ":" + 
-                      String(now.getMinutes()).padStart(2,'0');
-      
+      const dateStr = now.getFullYear() + "-" +
+        String(now.getMonth() + 1).padStart(2, '0') + "-" +
+        String(now.getDate()).padStart(2, '0') + " " +
+        String(now.getHours()).padStart(2, '0') + ":" +
+        String(now.getMinutes()).padStart(2, '0');
+
       const postObj = {
         id: Date.now(), // Generate unique ID
         type: "blog",
@@ -402,7 +419,7 @@ function initAdminMode() {
         date: dateStr,
         content: content
       };
-      
+
       jsonOutput.value = "  " + JSON.stringify(postObj, null, 2).replace(/\n/g, "\n  ") + ",\n";
       if (jsonContainer) jsonContainer.classList.remove('hidden');
     });
@@ -444,11 +461,11 @@ function initThemeSwitcher() {
   if (!switcherBtn) return;
 
   const icons = ['☀️', '🌑'];
-  
+
   const updateIcon = () => {
     switcherBtn.innerHTML = `<div class="xp-toggle-thumb">${icons[currentThemeIdx]}</div>`;
   };
-  
+
   updateIcon();
 
   switcherBtn.addEventListener('click', () => {
