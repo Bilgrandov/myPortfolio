@@ -30,73 +30,35 @@
           <button aria-label="Close"></button>
         </div>
       </div>
-      <div class="window-body">
-        <div class="projects-list">
-          <!-- Project 0: Spotify Redesign -->
-          <div class="window project-window">
-            <div class="title-bar">
-              <div class="title-bar-text">🎵 Spotify Redesign</div>
-              <div class="title-bar-controls">
-                <button aria-label="Close"></button>
-              </div>
-            </div>
-            <div class="window-body">
-              <div class="project-body">
-                <div class="project-icon">🎧</div>
-                <div class="project-details">
-                  <h3>Spotify App Redesign</h3>
-                  <div class="image-scroll-container">
-                    <img src="assets/spotify_project.webp" alt="Spotify Redesign Mockup" loading="lazy" width="857" height="315">
-                  </div>
-                  <p>A modern and sleek redesign of the Spotify mobile interface, focusing on improved navigation and a
-                    vibrant green aesthetic.</p>
-                  <div class="project-tags">
-                    <span>Figma</span><span>UI/UX</span><span>Mobile Design</span>
-                  </div>
-                  <div class="project-links">
-                    <a href="https://www.figma.com/design/JfzQzyBg7v0NJDBrF15eb8/Portofolio-Lat?node-id=0-1&p=f&t=avqRPUnPtmw2vLJn-0"
-                      target="_blank">
-                      <button type="button">► Figma Design</button>
-                    </a>
-                  </div>
-                </div>
-              </div>
+      <div class="window-body" style="padding: 0;">
+        <div class="explorer-container">
+          <!-- Kolom Kiri: Sidebar -->
+          <div class="explorer-sidebar">
+            <div class="tree-container">
+              <ul class="tree-view" id="projects-tree">
+
+              </ul>
             </div>
           </div>
 
-          <!-- Project 1: MonitoringDanaDesa -->
-          <div class="window project-window">
-            <div class="title-bar">
-              <div class="title-bar-text">📊 MonitoringDanaDesa</div>
-              <div class="title-bar-controls">
-                <button aria-label="Close"></button>
-              </div>
-            </div>
-            <div class="window-body">
-              <div class="project-body">
-                <div class="project-icon">🏘️</div>
-                <div class="project-details">
-                  <h3>Monitoring Dana Desa</h3>
-                  <div class="image-scroll-container">
-                    <img src="assets/monitoringDanaDesa.webp" alt="Monitoring Dana Desa" loading="lazy" width="843" height="422">
-                  </div>
-                  <p>Sistem informasi pemantauan alokasi dan penggunaan Dana Desa berbasis web, dirancang untuk
-                    transparansi dan akuntabilitas data.</p>
-                  <div class="project-tags">
-                    <span>Laravel</span><span>Bootstrap</span><span>MySQL</span><span>Web App</span>
-                  </div>
-                  <div class="project-links">
-                    <button type="button" disabled>► Private Project</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- Kolom Kanan: Viewer -->
+          <div class="explorer-content" id="project-viewer">
 
+            <!-- Tampilan Awal (Belum ada yang diklik) -->
+            <div id="proj-default" class="project-view-pane">
+              <h2 style="color: #666; text-align: center; margin-top: 50px;">👈 Pilih file proyek di sebelah kiri untuk
+                melihat detailnya...</h2>
+            </div>
+
+            <!-- Wadah Konten Proyek (Kita isi di Langkah 2) -->
+
+
+          </div>
         </div>
       </div>
       <div class="window-footer">
-        <span><img src="assets/profile.jpg" class="footer-mascot" alt="" loading="lazy" width="24" height="24">2 projects found</span>
+        <span><img src="assets/profile.jpg" class="footer-mascot" alt="" loading="lazy" width="24" height="24">2
+          projects found</span>
         <span>～ more coming soon! ～</span>
       </div>
     </div>
@@ -120,6 +82,102 @@
   </nav>
 
   <script src="script.js" defer></script>
+  <script>
+    // 1. Fungsi menampilkan proyek (yang lama, tetap kita pakai)
+    function showProject(projectId) {
+      document.querySelectorAll('.project-view-pane').forEach(el => {
+        el.classList.add('hidden');
+      });
+      document.getElementById(projectId).classList.remove('hidden');
+    }
+
+    // 2. Fungsi utama untuk nge-fetch JSON dan membuat HTML
+    async function loadProjects() {
+      try {
+        // Ambil data dari JSON
+        const response = await fetch('data/projects.json');
+        const projects = await response.json();
+
+        const treeEl = document.getElementById('projects-tree');
+        const viewerEl = document.getElementById('project-viewer');
+
+        // Cari tahu ada kategori apa saja (Misal: 'Work In Progress', 'Completed')
+        const categories = [...new Set(projects.map(p => p.category))];
+
+        categories.forEach(cat => {
+          // Buat "Folder Kategori" di Sidebar
+          const folder = document.createElement('li');
+          folder.className = 'folder';
+          folder.textContent = `📁 ${cat}`;
+          treeEl.appendChild(folder);
+
+          // Cari proyek yang masuk ke kategori ini
+          const catProjects = projects.filter(p => p.category === cat);
+
+          catProjects.forEach(p => {
+            // Buat daftar "File Proyek" di Sidebar
+            const li = document.createElement('li');
+            li.textContent = `📄 ${p.title}`;
+            li.onclick = () => showProject(p.id); // Pasangkan fungsi klik!
+            treeEl.appendChild(li);
+
+            // Buat Wadah Konten Proyek (Div tersembunyi) di Kanan
+            const pane = document.createElement('div');
+            pane.id = p.id;
+            pane.className = 'project-view-pane hidden';
+
+            // --- Merakit HTML ---
+            // Cek apakah ada status khusus (WIP)?
+            let statusHtml = p.status
+              ? `<p style="padding: 8px; background: #fff5e6; border-left: 3px solid #e68a00; font-size: 13px; margin: 10px 0;"><strong>Current Status:</strong> ${p.status}</p>`
+              : '';
+
+            // Cek apakah ada gambar?
+            let imgHtml = p.image
+              ? `<div class="image-scroll-container"><img src="${p.image}" alt="${p.title}" loading="lazy" width="843" height="422"></div>`
+              : '';
+
+            // Rakit Tag/Label
+            let tagsHtml = p.tags.map(t => {
+              if (t === 'ONGOING') return `<span style="background: #ffcccc; border-color: #ff6666; color: #cc0000; font-weight: bold;">${t}</span>`;
+              if (p.category === 'Work In Progress') return `<span style="background: #fff3e6; border-color: #ffcc80; color: #cc7a00;">${t}</span>`;
+              return `<span>${t}</span>`;
+            }).join('');
+
+            // Rakit Tombol Link
+            let linkHtml = p.link
+              ? `<a href="${p.link}" target="_blank"><button type="button">${p.linkText}</button></a>`
+              : `<button type="button" disabled style="${p.linkText.includes('looking') ? 'cursor: help;' : ''}">${p.linkText}</button>`;
+
+            // Suntikkan semuanya ke dalam div!
+            pane.innerHTML = `
+              <div class="project-body">
+                <div class="project-icon" ${p.category === 'Work In Progress' ? 'style="background: #fff3e6; border-color: #ffcc80;"' : ''}>${p.icon}</div>
+                <div class="project-details">
+                  <h3 style="margin-top: 0; font-size: 18px; ${p.category === 'Work In Progress' ? 'color: #cc7a00;' : ''}">${p.title}</h3>
+                  ${imgHtml}
+                  <p>${p.description}</p>
+                  ${statusHtml}
+                  <div class="project-tags">${tagsHtml}</div>
+                  <div class="project-links">${linkHtml}</div>
+                </div>
+              </div>
+            `;
+
+            // Tempel div yang sudah jadi ini ke layar penonton (Viewer)
+            viewerEl.appendChild(pane);
+          });
+        });
+
+      } catch (err) {
+        console.error("Gagal memuat projects.json", err);
+      }
+    }
+
+    // 3. Panggil fungsinya saat web selesai dimuat
+    loadProjects();
+  </script>
+
 </body>
 
 </html>

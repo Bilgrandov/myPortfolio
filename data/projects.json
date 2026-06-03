@@ -1,0 +1,51 @@
+[
+    {
+        "id": "proj-wip",
+        "category": "Work In Progress",
+        "icon": "💻",
+        "title": "XP OS (Portfolio)",
+        "description": "A retro Windows XP-inspired portfolio built entirely without UI frameworks to deepen my understanding of vanilla Javascript, CSS structure, and DOM manipulation.",
+        "status": "Implementing a dynamic Markdown fetching system. Just fixed a code readability issue in light mode. Next plan: building this interactive File Explorer for the Projects page!",
+        "tags": [
+            "Vanilla JS",
+            "Markdown",
+            "ONGOING"
+        ],
+        "image": null,
+        "link": null,
+        "linkText": "► You are looking at it!"
+    },
+    {
+        "id": "proj-spotify",
+        "category": "Completed",
+        "icon": "🎧",
+        "title": "Spotify App Redesign",
+        "description": "A modern and sleek redesign of the Spotify mobile interface, focusing on improved navigation and a vibrant green aesthetic.",
+        "status": null,
+        "tags": [
+            "Figma",
+            "UI/UX",
+            "Mobile Design"
+        ],
+        "image": "assets/spotify_project.webp",
+        "link": "https://www.figma.com/design/JfzQzyBg7v0NJDBrF15eb8/Portofolio-Lat?node-id=0-1&p=f&t=avqRPUnPtmw2vLJn-0",
+        "linkText": "► Figma Design"
+    },
+    {
+        "id": "proj-danadesa",
+        "category": "Completed",
+        "icon": "🏘️",
+        "title": "Monitoring Dana Desa",
+        "description": "Sistem informasi pemantauan alokasi dan penggunaan Dana Desa berbasis web, dirancang untuk transparansi dan akuntabilitas data.",
+        "status": null,
+        "tags": [
+            "Laravel",
+            "Bootstrap",
+            "MySQL",
+            "Web App"
+        ],
+        "image": "assets/monitoringDanaDesa.webp",
+        "link": null,
+        "linkText": "► Private Project"
+    }
+]
