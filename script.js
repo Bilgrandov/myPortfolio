@@ -13,7 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initWorkBadge();
 });
 
-/* --- Sparkle Cursor Trail --- */
+/**
+ * Initializes the interactive sparkle cursor trail animation.
+ * Renders particles on mouse and touch movement using an HTML5 Canvas.
+ */
 function initSparkles() {
   const canvas = document.getElementById('sparkle-canvas');
   if (!canvas) return;
@@ -115,7 +118,10 @@ function initSparkles() {
   }
 }
 
-/* --- Taskbar Clock --- */
+/**
+ * Initializes the taskbar clock.
+ * Updates the time every 30 seconds to match the system time.
+ */
 function initClock() {
   const el = document.getElementById('taskbar-clock');
   if (!el) return;
@@ -129,7 +135,10 @@ function initClock() {
   setInterval(update, 30000);
 }
 
-/* --- Stat Counter Animation --- */
+/**
+ * Initializes the stat counter animation on the homepage.
+ * Uses IntersectionObserver to trigger animation when scrolled into view.
+ */
 function initStatCounters() {
   const stats = document.querySelectorAll('.stat-num[data-count]');
   if (!stats.length) return;
@@ -158,6 +167,10 @@ function animateCount(el, target) {
 /* --- Journaling & Blog --- */
 let allPostsData = [];
 
+/**
+ * Fetches blog and journal posts from the data/posts.json database.
+ * Sorts them in descending order by date.
+ */
 async function ensurePostsFetched() {
   if (allPostsData.length === 0) {
     try {
@@ -173,6 +186,10 @@ async function ensurePostsFetched() {
   }
 }
 
+/**
+ * Initializes the post explorer interface on the posts.html page.
+ * Handles the rendering of the category tree and individual content panes.
+ */
 async function initPosts() {
   const treeEl = document.getElementById('posts-tree');
   if (!treeEl) return;
@@ -246,7 +263,7 @@ async function initPosts() {
       if (catEl) catEl.textContent = post.type.toUpperCase();
 
       if (contentEl) {
-        // Fungsi pembantu agar kodenya tidak ditulis berulang-ulang
+        // Helper function to prevent code repetition
         const renderText = (text) => {
           if (typeof marked !== 'undefined') {
             contentEl.innerHTML = marked.parse(text);
@@ -255,16 +272,16 @@ async function initPosts() {
           }
         };
 
-        // Cek: Apakah post ini menggunakan file .md?
+        // Check if the post utilizes an external .md file
         if (post.file) {
-          contentEl.innerHTML = '<p class="loading-text">Sedang memuat artikel...</p>';
+          contentEl.innerHTML = '<p class="loading-text">Loading article...</p>';
 
-          fetch(post.file) // Pergi dan ambil file .md-nya
+          fetch(post.file) // Fetch the external markdown file
             .then(response => response.text())
             .then(text => renderText(text))
-            .catch(err => renderText("Gagal memuat artikel 😢"));
+            .catch(err => renderText("Failed to load article 😢"));
         } else {
-          // Jika pakai sistem lama (langsung dari posts.json)
+          // Fallback to legacy system (inline content from posts.json)
           renderText(post.content);
         }
       }
@@ -300,7 +317,10 @@ async function initPosts() {
   window.addEventListener('hashchange', renderContentpane);
 }
 
-/* --- Homepage Latest Posts Teaser --- */
+/**
+ * Initializes the latest posts teaser widget on the homepage.
+ * Displays the two most recent posts fetched from the JSON database.
+ */
 async function initLatestPostsTeaser() {
   const container = document.getElementById('latest-posts-container');
   if (!container) return;
@@ -318,7 +338,10 @@ async function initLatestPostsTeaser() {
   });
 }
 
-/* --- Admin Mode --- */
+/**
+ * Initializes the hidden Admin Mode.
+ * Unlocks the post composer via keyboard shortcut (Ctrl + Shift + L) and password validation.
+ */
 function initAdminMode() {
   const PASS_HASH = '87fd4d3bdc50aaf7435056df8f56d21efcfeb9da7305090ed09d1ff62f66aa6c';
   async function sha256(message) {
@@ -449,7 +472,10 @@ function initAdminMode() {
   }
 }
 
-/* --- Theme Switcher --- */
+/**
+ * Initializes the theme switcher toggle (Light/Dark mode).
+ * Persists the user's preference in localStorage.
+ */
 function initThemeSwitcher() {
   const themes = ['default', 'dark'];
   let currentThemeIdx = themes.indexOf(localStorage.getItem('portfolio-theme') || 'default');
@@ -477,7 +503,11 @@ function initThemeSwitcher() {
   });
 }
 
-/* --- Work Badge Pinned Position (Scroll-tracked) --- */
+/**
+ * Initializes the 'Open to Work' badge positioning logic.
+ * Dynamically updates its absolute position on scroll to simulate a sticky effect 
+ * without breaking the retro layout flow.
+ */
 function initWorkBadge() {
   const badge = document.querySelector('.work-badge');
   if (!badge) return;

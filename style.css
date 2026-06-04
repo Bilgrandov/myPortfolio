@@ -1,4 +1,9 @@
-/* Fonts loaded via <link> in HTML head for performance */
+/**
+ * style.css
+ * Core stylesheet for Bilgrandov's Tech Corner.
+ * Implements retro Windows XP aesthetic with modern responsive flex/grid layouts.
+ * Note: Fonts loaded via <link> in HTML head for performance.
+ */
 
 :root {
   --font-pixel: 'VT323', 'Courier New', monospace;

@@ -83,7 +83,12 @@
 
   <script src="script.js" defer></script>
   <script>
-    // 1. Fungsi menampilkan proyek (yang lama, tetap kita pakai)
+    /**
+     * Toggles the visibility of project detail panes.
+     * Hides all panes and removes the 'hidden' class from the selected project.
+     * 
+     * @param {string} projectId - The DOM ID of the project pane to display.
+     */
     function showProject(projectId) {
       document.querySelectorAll('.project-view-pane').forEach(el => {
         el.classList.add('hidden');
@@ -91,65 +96,63 @@
       document.getElementById(projectId).classList.remove('hidden');
     }
 
-    // 2. Fungsi utama untuk nge-fetch JSON dan membuat HTML
+    /**
+     * Fetches project data from JSON and dynamically constructs the file explorer UI.
+     * Generates both the sidebar navigation tree and the main content panes.
+     */
     async function loadProjects() {
       try {
-        // Ambil data dari JSON
         const response = await fetch('data/projects.json');
+        if (!response.ok) throw new Error('Network response was not ok');
         const projects = await response.json();
-
+        
         const treeEl = document.getElementById('projects-tree');
         const viewerEl = document.getElementById('project-viewer');
-
-        // Cari tahu ada kategori apa saja (Misal: 'Work In Progress', 'Completed')
+        
+        // Extract unique categories for folder creation
         const categories = [...new Set(projects.map(p => p.category))];
-
+        
         categories.forEach(cat => {
-          // Buat "Folder Kategori" di Sidebar
+          // Render category folder in sidebar
           const folder = document.createElement('li');
           folder.className = 'folder';
           folder.textContent = `📁 ${cat}`;
           treeEl.appendChild(folder);
-
-          // Cari proyek yang masuk ke kategori ini
+          
           const catProjects = projects.filter(p => p.category === cat);
-
+          
           catProjects.forEach(p => {
-            // Buat daftar "File Proyek" di Sidebar
+            // Render project file item in sidebar
             const li = document.createElement('li');
             li.textContent = `📄 ${p.title}`;
-            li.onclick = () => showProject(p.id); // Pasangkan fungsi klik!
+            li.onclick = () => showProject(p.id);
             treeEl.appendChild(li);
-
-            // Buat Wadah Konten Proyek (Div tersembunyi) di Kanan
+            
+            // Construct project content pane
             const pane = document.createElement('div');
             pane.id = p.id;
             pane.className = 'project-view-pane hidden';
-
-            // --- Merakit HTML ---
-            // Cek apakah ada status khusus (WIP)?
-            let statusHtml = p.status
-              ? `<p style="padding: 8px; background: #fff5e6; border-left: 3px solid #e68a00; font-size: 13px; margin: 10px 0;"><strong>Current Status:</strong> ${p.status}</p>`
+            
+            // Build dynamic HTML segments
+            const statusHtml = p.status 
+              ? `<p style="padding: 8px; background: #fff5e6; border-left: 3px solid #e68a00; font-size: 13px; margin: 10px 0;"><strong>Current Status:</strong> ${p.status}</p>` 
               : '';
-
-            // Cek apakah ada gambar?
-            let imgHtml = p.image
-              ? `<div class="image-scroll-container"><img src="${p.image}" alt="${p.title}" loading="lazy" width="843" height="422"></div>`
+            
+            const imgHtml = p.image 
+              ? `<div class="image-scroll-container"><img src="${p.image}" alt="${p.title}" loading="lazy" width="843" height="422"></div>` 
               : '';
-
-            // Rakit Tag/Label
-            let tagsHtml = p.tags.map(t => {
+            
+            const tagsHtml = p.tags.map(t => {
               if (t === 'ONGOING') return `<span style="background: #ffcccc; border-color: #ff6666; color: #cc0000; font-weight: bold;">${t}</span>`;
               if (p.category === 'Work In Progress') return `<span style="background: #fff3e6; border-color: #ffcc80; color: #cc7a00;">${t}</span>`;
               return `<span>${t}</span>`;
             }).join('');
-
-            // Rakit Tombol Link
-            let linkHtml = p.link
+            
+            const linkHtml = p.link 
               ? `<a href="${p.link}" target="_blank"><button type="button">${p.linkText}</button></a>`
               : `<button type="button" disabled style="${p.linkText.includes('looking') ? 'cursor: help;' : ''}">${p.linkText}</button>`;
 
-            // Suntikkan semuanya ke dalam div!
+            // Inject assembled HTML into pane
             pane.innerHTML = `
               <div class="project-body">
                 <div class="project-icon" ${p.category === 'Work In Progress' ? 'style="background: #fff3e6; border-color: #ffcc80;"' : ''}>${p.icon}</div>
@@ -163,18 +166,17 @@
                 </div>
               </div>
             `;
-
-            // Tempel div yang sudah jadi ini ke layar penonton (Viewer)
+            
             viewerEl.appendChild(pane);
           });
         });
-
+        
       } catch (err) {
-        console.error("Gagal memuat projects.json", err);
+        console.error("Failed to load projects.json:", err);
       }
     }
 
-    // 3. Panggil fungsinya saat web selesai dimuat
+    // Initialize projects on script load
     loadProjects();
   </script>
 
