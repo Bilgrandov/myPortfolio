@@ -4,6 +4,8 @@
         "category": "Work In Progress",
         "icon": "💻",
         "title": "XP OS (Portfolio)",
+        "year": "2026",
+        "role": "Frontend Engineer",
         "description": "A retro Windows XP-inspired portfolio built entirely without UI frameworks to deepen my understanding of vanilla Javascript, CSS structure, and DOM manipulation.",
         "status": "Implementing a dynamic Markdown fetching system. Just fixed a code readability issue in light mode. Next plan: building this interactive File Explorer for the Projects page!",
         "tags": [
@@ -20,6 +22,8 @@
         "category": "Completed",
         "icon": "🎧",
         "title": "Spotify App Redesign",
+        "year": "2023",
+        "role": "UI/UX Designer",
         "description": "A modern and sleek redesign of the Spotify mobile interface, focusing on improved navigation and a vibrant green aesthetic.",
         "status": null,
         "tags": [
@@ -36,6 +40,8 @@
         "category": "Completed",
         "icon": "🏘️",
         "title": "Monitoring Dana Desa",
+        "year": "2024",
+        "role": "Fullstack Developer",
         "description": "Sistem informasi pemantauan alokasi dan penggunaan Dana Desa berbasis web, dirancang untuk transparansi dan akuntabilitas data.",
         "status": null,
         "tags": [

@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Kosugi+Maru&display=swap">
   <link rel="stylesheet" href="assets/xp.css">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 </head>
 
 <body>
@@ -34,6 +35,11 @@
         <div class="explorer-container">
           <!-- Kolom Kiri: Sidebar -->
           <div class="explorer-sidebar">
+            <div style="padding: 8px; border-bottom: 1px solid #ccc;">
+              <button id="download-pdf-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 4px; font-weight: bold; cursor: pointer;">
+                <span style="font-size: 16px;">📄</span> Export to PDF
+              </button>
+            </div>
             <div class="tree-container">
               <ul class="tree-view" id="projects-tree">
 
@@ -105,6 +111,7 @@
         const response = await fetch('data/projects.json');
         if (!response.ok) throw new Error('Network response was not ok');
         const projects = await response.json();
+        window.portfolioProjects = projects; // Save globally for PDF generator
         
         const treeEl = document.getElementById('projects-tree');
         const viewerEl = document.getElementById('project-viewer');
@@ -158,6 +165,9 @@
                 <div class="project-icon" ${p.category === 'Work In Progress' ? 'style="background: #fff3e6; border-color: #ffcc80;"' : ''}>${p.icon}</div>
                 <div class="project-details">
                   <h3 style="margin-top: 0; font-size: 18px; ${p.category === 'Work In Progress' ? 'color: #cc7a00;' : ''}">${p.title}</h3>
+                  <div style="font-size: 13px; color: #555; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #ccc;">
+                    <strong>Role:</strong> ${p.role} &nbsp;|&nbsp; <strong>Year:</strong> ${p.year}
+                  </div>
                   ${imgHtml}
                   <p>${p.description}</p>
                   ${statusHtml}
@@ -178,6 +188,184 @@
 
     // Initialize projects on script load
     loadProjects();
+
+    /**
+     * Helper to load an image from a URL and convert it to base64 JPEG format.
+     * jsPDF requires base64 to embed images natively.
+     */
+    function getBase64Image(url) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous';
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          // Convert to JPEG since jsPDF plays nicely with it (avoids webp issues)
+          const dataURL = canvas.toDataURL('image/jpeg');
+          resolve({ dataURL, width: img.width, height: img.height });
+        };
+        img.onerror = error => reject(error);
+        img.src = url;
+      });
+    }
+
+    /**
+     * Generates a PDF document from the loaded JSON data using jsPDF.
+     * Implements "Jalur B" (Auto-generated PDF with embedded images).
+     */
+    async function generatePDF() {
+      // Check if jsPDF library has loaded from CDN
+      if (!window.jspdf) {
+        alert("PDF Library is still loading. Please wait a moment and try again.");
+        return;
+      }
+      
+      const btn = document.getElementById('download-pdf-btn');
+      const originalBtnHTML = btn.innerHTML;
+      btn.innerHTML = `<span style="font-size: 16px;">⏳</span> Generating...`;
+      btn.disabled = true;
+
+      try {
+        const { jsPDF } = window.jspdf;
+        // Use Landscape ('l') orientation for a presentation-style layout
+        const doc = new jsPDF({ orientation: "l", unit: "mm", format: "a4" });
+
+        if (!window.portfolioProjects || window.portfolioProjects.length === 0) {
+          throw new Error("No projects found to export!");
+        }
+
+        // Loop through all projects (1 Page = 1 Project constraint)
+        for (let i = 0; i < window.portfolioProjects.length; i++) {
+          const p = window.portfolioProjects[i];
+
+          // Generate a new page for every subsequent project
+          if (i > 0) {
+            doc.addPage();
+          }
+
+          // Top Header (Portfolio Branding)
+          doc.setFontSize(10);
+          doc.setTextColor(150, 150, 150);
+          doc.text("Bilgrandov - Tech Portfolio", 14, 12);
+
+          let leftY = 28;
+
+          // Project Title
+          doc.setFontSize(24);
+          doc.setTextColor(36, 94, 219); // Signature taskbar blue
+          doc.text(`${p.title}`, 14, leftY);
+          leftY += 10;
+
+          // Project Meta Data (Role & Year)
+          doc.setFontSize(12);
+          doc.setTextColor(100, 100, 100);
+          doc.text(`Year: ${p.year}   |   Role: ${p.role}`, 14, leftY);
+          leftY += 6;
+          doc.text(`Category: ${p.category}`, 14, leftY);
+          leftY += 15;
+
+          // Responsive Text Column:
+          // If an image exists, constrain text to the left column (90mm width).
+          // If no image exists, allow text to span the entire page width (260mm).
+          const textColumnWidth = p.image ? 90 : 260;
+
+          // Project Description
+          doc.setFontSize(12);
+          doc.setTextColor(50, 50, 50);
+          const lines = doc.splitTextToSize(p.description, textColumnWidth);
+          doc.text(lines, 14, leftY);
+          leftY += (lines.length * 6) + 10;
+
+          // Publication Link Integration
+          if (p.link) {
+            doc.setFontSize(11);
+            doc.setTextColor(36, 94, 219); // Link blue
+            
+            // Generate link text and bind click event URL
+            const linkText = `Link: ${p.link}`;
+            
+            // Note: Truncate excessively long links to prevent overlapping with the image column
+            const shortLink = linkText.length > 50 ? linkText.substring(0, 47) + "..." : linkText;
+            
+            doc.textWithLink(shortLink, 14, leftY, { url: p.link });
+            
+            // Manually draw an underline to signify clickability
+            const textWidth = doc.getTextWidth(shortLink);
+            doc.line(14, leftY + 1, 14 + textWidth, leftY + 1);
+            
+            leftY += 10;
+          }
+
+          // Special Project Status (e.g., Work In Progress)
+          if (p.status) {
+            doc.setFontSize(11);
+            doc.setTextColor(200, 100, 0); // Alert Orange
+            const statusLines = doc.splitTextToSize(`Status: ${p.status}`, textColumnWidth);
+            doc.text(statusLines, 14, leftY);
+            leftY += (statusLines.length * 6) + 10;
+          }
+
+          // Render Screenshot in the Right Column (Pitch Deck Style)
+          if (p.image) {
+            try {
+              const imgData = await getBase64Image(p.image);
+              
+              // A4 Landscape Width: 297mm. 
+              // The right column starts at X=115, leaving ~170mm of available width.
+              let imgW = 170;
+              let imgH = (imgData.height * imgW) / imgData.width;
+              
+              // Constraint max height to prevent the image from being cropped (max 160mm)
+              if (imgH > 160) {
+                 imgH = 160;
+                 imgW = (imgData.width * imgH) / imgData.height;
+              }
+              
+              // Auto-center the image horizontally within the right column
+              const xPos = 115 + ((170 - imgW) / 2);
+              
+              doc.addImage(imgData.dataURL, 'JPEG', xPos, 28, imgW, imgH);
+            } catch (err) {
+              console.warn("Could not load image for PDF:", p.image, err);
+            }
+          }
+          
+          // ==========================================
+          // PDF PAGE FOOTER
+          // ==========================================
+          
+          // 1. Horizontal Separator Line
+          doc.setDrawColor(200, 200, 200); // Light gray stroke
+          doc.line(14, 194, 283, 194); // (x1, y1, x2, y2)
+
+          // Footer Typography Setup
+          doc.setFontSize(10);
+          doc.setTextColor(120, 120, 120);
+
+          // 2. Contact Info (Bottom Left)
+          doc.text("GitHub: github.com/bilgrandov   |   Email: Bilgrandov9902003@gmail.com", 14, 202);
+          
+          // 3. Pagination (Bottom Right)
+          doc.text(`Page ${i + 1} of ${window.portfolioProjects.length}`, 265, 202);
+        }
+
+        // Trigger file download
+        doc.save("Bilgrandov_Projects_Presentation.pdf");
+
+      } catch (err) {
+        console.error(err);
+        alert(err.message || "Failed to generate PDF.");
+      } finally {
+        btn.innerHTML = originalBtnHTML;
+        btn.disabled = false;
+      }
+    }
+
+    // Attach event listener to our new button
+    document.getElementById('download-pdf-btn').addEventListener('click', generatePDF);
   </script>
 
 </body>
