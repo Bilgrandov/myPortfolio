@@ -61,7 +61,7 @@
         "title": "Personal Training Platform",
         "year": "2026",
         "role": "Fullstack Developer",
-        "description": "Learning to code on a single monitor was incredibly frustrating I constantly had to Alt-Tab between reading theory and writing code in my editor. To solve this friction, I am engineering an E-Learning platform inspired by freeCodeCamp, but specifically designed to eliminate context-switching. By integrating an industry-standard curriculum alongside a live code editor in a single, unified workspace, my goal is to keep learners deeply focused and in the flow state.",
+        "description": "Learning to code on a single monitor was incredibly frustrating I constantly had to Alt-Tab between reading theory and writing code in my editor. To solve this friction, I develop an E-Learning platform inspired by freeCodeCamp, but specifically designed to eliminate context switching. By integrating an industry-standard curriculum alongside a live code editor in a single, unified workspace, my goal is to keep learners deeply focused and in the flow state.",
         "status": "Currently in active development.",
         "tags": [
             "E-Learning",
