@@ -142,7 +142,7 @@
             
             // Build dynamic HTML segments
             const statusHtml = p.status 
-              ? `<p style="padding: 8px; background: #fff5e6; border-left: 3px solid #e68a00; font-size: 13px; margin: 10px 0;"><strong>Current Status:</strong> ${p.status}</p>` 
+              ? `<div class="project-status-alert"><strong>Current Status:</strong> ${p.status}</div>` 
               : '';
             
             const imgHtml = p.image 
@@ -150,8 +150,8 @@
               : '';
             
             const tagsHtml = p.tags.map(t => {
-              if (t === 'ONGOING') return `<span style="background: #ffcccc; border-color: #ff6666; color: #cc0000; font-weight: bold;">${t}</span>`;
-              if (p.category === 'Work In Progress') return `<span style="background: #fff3e6; border-color: #ffcc80; color: #cc7a00;">${t}</span>`;
+              if (t === 'ONGOING') return `<span class="project-tag-ongoing">${t}</span>`;
+              if (p.category === 'Work In Progress') return `<span class="project-tag-wip">${t}</span>`;
               return `<span>${t}</span>`;
             }).join('');
             
@@ -165,7 +165,7 @@
                 <div class="project-icon" ${p.category === 'Work In Progress' ? 'style="background: #fff3e6; border-color: #ffcc80;"' : ''}>${p.icon}</div>
                 <div class="project-details">
                   <h3 style="margin-top: 0; font-size: 18px; ${p.category === 'Work In Progress' ? 'color: #cc7a00;' : ''}">${p.title}</h3>
-                  <div style="font-size: 13px; color: #555; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #ccc;">
+                  <div class="project-meta-info">
                     <strong>Role:</strong> ${p.role} &nbsp;|&nbsp; <strong>Year:</strong> ${p.year}
                   </div>
                   ${imgHtml}
