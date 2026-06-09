@@ -58,9 +58,8 @@ img {
 #sparkle-canvas {
   position: fixed;
   inset: 0;
-  z-index: 9998;
+  z-index: 10004;
   pointer-events: none;
-  contain: strict;
 }
 
 /* === Page Layout === */
