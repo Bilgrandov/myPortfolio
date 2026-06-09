@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initLatestPostsTeaser();
   initAdminMode();
   initThemeSwitcher();
-  initWorkBadge();
 });
 
 /**
@@ -501,42 +500,4 @@ function initThemeSwitcher() {
     localStorage.setItem('portfolio-theme', newTheme);
     updateIcon();
   });
-}
-
-/**
- * Initializes the 'Open to Work' badge positioning logic.
- * Dynamically updates its absolute position on scroll to simulate a sticky effect 
- * without breaking the retro layout flow.
- */
-function initWorkBadge() {
-  const badge = document.querySelector('.work-badge');
-  if (!badge) return;
-
-  function updatePosition() {
-    const isMobile = window.innerWidth <= 640;
-    const bottomOffset = isMobile ? 55 : 70;
-    const rightOffset = isMobile ? 8 : 10;
-    const scrollY = window.scrollY || window.pageYOffset;
-    const viewH = window.innerHeight;
-
-    badge.style.position = 'absolute';
-    badge.style.top = (scrollY + viewH - bottomOffset - badge.offsetHeight) + 'px';
-    badge.style.right = rightOffset + 'px';
-    badge.style.bottom = 'auto';
-  }
-
-  updatePosition();
-
-  let ticking = false;
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(() => {
-        updatePosition();
-        ticking = false;
-      });
-    }
-  }, { passive: true });
-
-  window.addEventListener('resize', updatePosition);
 }

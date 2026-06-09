@@ -1148,7 +1148,7 @@ ul.tree-view li.folder {
 
 /* === Work Badge Sticker === */
 .work-badge {
-  position: absolute;
+  position: fixed;
   bottom: 70px;
   right: 10px;
   width: 130px;
