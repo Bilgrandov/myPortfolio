@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initLatestPostsTeaser();
   initAdminMode();
   initThemeSwitcher();
+  initCrtConfig();
+  initSkills();
+  initGuestbook();
 });
 
 /**
@@ -19,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function initSparkles() {
   const canvas = document.getElementById('sparkle-canvas');
   if (!canvas) return;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
   const ctx = canvas.getContext('2d');
   let particles = [];
   const colors = ['#00bdd6', '#d2e2f9', '#ff6b9d', '#ffe45e', '#87ceeb'];
@@ -208,6 +213,7 @@ async function initPosts() {
         posts.forEach(p => {
           const li = document.createElement('li');
           li.textContent = `📄 ${p.title}`;
+          li.setAttribute('data-post-id', p.id);
           li.onclick = () => window.location.hash = `post-${p.id}`;
           treeEl.appendChild(li);
         });
@@ -236,6 +242,18 @@ async function initPosts() {
         item.innerHTML = `📄 <strong>${p.title}</strong> — <small>${p.date}</small>`;
         item.onclick = () => window.location.hash = `post-${p.id}`;
         idxList.appendChild(item);
+      });
+    }
+
+    // Highlight selected tree node
+    if (treeEl) {
+      treeEl.querySelectorAll('li').forEach(item => {
+        const postId = item.getAttribute('data-post-id');
+        if (hash && hash.startsWith('#post-') && postId === hash.replace('#post-', '')) {
+          item.classList.add('selected-item');
+        } else {
+          item.classList.remove('selected-item');
+        }
       });
     }
 
@@ -500,4 +518,239 @@ function initThemeSwitcher() {
     localStorage.setItem('portfolio-theme', newTheme);
     updateIcon();
   });
+}
+
+/**
+ * Initializes the CRT Monitor controls and applies saved states.
+ */
+function initCrtConfig() {
+  const crt = document.querySelector('.crt-overlay');
+  if (!crt) return;
+
+  // Read saved configurations
+  let scanlines = localStorage.getItem('crt-scanlines') || 'low'; // default to low
+  let flicker = localStorage.getItem('crt-flicker') || 'on'; // default to on
+
+  // Function to apply classes based on config
+  function applyCrtConfig() {
+    // Reset scanline classes
+    crt.classList.remove('crt-off', 'crt-low-scanlines');
+    if (scanlines === 'off') {
+      crt.classList.add('crt-off');
+    } else if (scanlines === 'low') {
+      crt.classList.add('crt-low-scanlines');
+    }
+
+    // Reset flicker classes
+    crt.classList.remove('crt-no-flicker');
+    if (flicker === 'off') {
+      crt.classList.add('crt-no-flicker');
+    }
+  }
+
+  // Apply initially
+  applyCrtConfig();
+
+  // If we are on the page with CRT controls, bind listeners and highlights
+  const scanHeavy = document.getElementById('crt-scan-heavy');
+  const scanLow = document.getElementById('crt-scan-low');
+  const scanOff = document.getElementById('crt-scan-off');
+  const flickerOn = document.getElementById('crt-flicker-on');
+  const flickerOff = document.getElementById('crt-flicker-off');
+
+  if (scanHeavy && scanLow && scanOff && flickerOn && flickerOff) {
+    function updateBtnActiveStates() {
+      // Clear active states
+      [scanHeavy, scanLow, scanOff, flickerOn, flickerOff].forEach(b => b.classList.remove('active'));
+
+      // Highlight active scanline button
+      if (scanlines === 'heavy') scanHeavy.classList.add('active');
+      else if (scanlines === 'low') scanLow.classList.add('active');
+      else if (scanlines === 'off') scanOff.classList.add('active');
+
+      // Highlight active flicker button
+      if (flicker === 'on') flickerOn.classList.add('active');
+      else flickerOff.classList.add('active');
+    }
+
+    updateBtnActiveStates();
+
+    scanHeavy.onclick = () => { scanlines = 'heavy'; localStorage.setItem('crt-scanlines', 'heavy'); applyCrtConfig(); updateBtnActiveStates(); };
+    scanLow.onclick = () => { scanlines = 'low'; localStorage.setItem('crt-scanlines', 'low'); applyCrtConfig(); updateBtnActiveStates(); };
+    scanOff.onclick = () => { scanlines = 'off'; localStorage.setItem('crt-scanlines', 'off'); applyCrtConfig(); updateBtnActiveStates(); };
+
+    flickerOn.onclick = () => { flicker = 'on'; localStorage.setItem('crt-flicker', 'on'); applyCrtConfig(); updateBtnActiveStates(); };
+    flickerOff.onclick = () => { flicker = 'off'; localStorage.setItem('crt-flicker', 'off'); applyCrtConfig(); updateBtnActiveStates(); };
+  }
+}
+
+const skillCategories = [
+  {
+    name: "Front-End",
+    icon: "🎨",
+    skills: [
+      { id: "skill-html", name: "HTML5", icon: '<i class="devicon-html5-plain colored" style="font-size: 32px;"></i>', level: 90, desc: "The foundational markup language of the web. I use semantic HTML5 elements to structure code clearly for SEO, accessibility (screen readers), and long-term maintainability." },
+      { id: "skill-css", name: "CSS3", icon: '<i class="devicon-css3-plain colored" style="font-size: 32px;"></i>', level: 85, desc: "Advanced CSS styling including Custom Properties (CSS variables) for dynamic dark modes, complex animations, transitions, and writing clean, scalable responsive layouts." },
+      { id: "skill-javascript", name: "JavaScript", icon: '<i class="devicon-javascript-plain colored" style="font-size: 32px;"></i>', level: 85, desc: "Deep knowledge of modern ES6+ vanilla JavaScript. Experienced in asynchronous flow control (Promises, Async/Await), DOM manipulation, dynamic page rendering, and state storage." },
+      { id: "skill-flexbox", name: "Flexbox", icon: "<span style='font-size: 28px;'>📦</span>", level: 90, desc: "One-dimensional layout model. Used extensively to align elements dynamically, manage flexible items within headers, cards, and taskbar navigation panels." },
+      { id: "skill-grid", name: "Grid Layout", icon: "<span style='font-size: 28px;'>🏁</span>", level: 80, desc: "Two-dimensional layout grid. Excellent for building clean, tabular, or masonry layouts like photo galleries and document explorer panes." },
+      { id: "skill-semantic", name: "Semantic HTML", icon: "<span style='font-size: 28px;'>📑</span>", level: 90, desc: "Adhering to correct semantic structures (main, section, article, nav, header, footer) rather than nested divs. Ensures optimized browser parsing, accessibility, and SEO." },
+      { id: "skill-responsive", name: "Responsive Design", icon: "<span style='font-size: 28px;'>📱</span>", level: 90, desc: "Designing pages that fluidly scale from massive 4K monitors down to small mobile phones using fluid grids, flexible images, and media query breakpoints." },
+      { id: "skill-bootstrap", name: "Bootstrap", icon: '<i class="devicon-bootstrap-plain colored" style="font-size: 32px;"></i>', level: 75, desc: "Rapid prototyping framework. Experienced with using its predefined grid layouts and components for corporate projects and quick dashboard applications." },
+      { id: "skill-tailwind", name: "Tailwind CSS", icon: '<i class="devicon-tailwindcss-original colored" style="font-size: 32px;"></i>', level: 80, desc: "Utility-first CSS framework. Used to quickly style responsive modern designs using direct inline class configurations without bloated stylesheets." }
+    ]
+  },
+  {
+    name: "Back-End & Database",
+    icon: "⚙️",
+    skills: [
+      { id: "skill-php", name: "PHP", icon: '<i class="devicon-php-plain colored" style="font-size: 32px;"></i>', level: 80, desc: "Server-side scripting language. Comfortable building backend dynamic routing, form submissions, session tracking, and RESTful API structures." },
+      { id: "skill-laravel", name: "Laravel", icon: '<i class="devicon-laravel-original colored" style="font-size: 32px;"></i>', level: 85, desc: "My favorite backend framework. Strong familiarity with MVC architecture, routing, migrations, Eloquent ORM, authentication, and middleware systems." },
+      { id: "skill-mysql", name: "MySQL", icon: '<i class="devicon-mysql-plain colored" style="font-size: 32px;"></i>', level: 80, desc: "Relational database management. Writing efficient SQL queries, indexing, setting up primary/foreign key constraints, and designing clean database schemas." }
+    ]
+  },
+  {
+    name: "Design & Methodology",
+    icon: "🛠️",
+    skills: [
+      { id: "skill-uml", name: "UML Design", icon: "<span style='font-size: 28px;'>📐</span>", level: 75, desc: "Unified Modeling Language. Creating flowcharts, use case diagrams, and database relational schemas before writing code to ensure correct software architecture." },
+      { id: "skill-ai", name: "AI Site Builder", icon: "<span style='font-size: 28px;'>🤖</span>", level: 95, desc: "Leveraging state-of-the-art LLMs and AI coding agents to accelerate development, analyze complexity, write automated unit tests, and brainstorm advanced visual designs." }
+    ]
+  }
+];
+
+/**
+ * Renders and handles interactions in the Skills Tabbed Device Manager page.
+ */
+function initSkills() {
+  const deviceList = document.getElementById('device-list');
+  if (!deviceList) return;
+
+  const tabBtnFrontend = document.getElementById('tab-btn-frontend');
+  const tabBtnBackend = document.getElementById('tab-btn-backend');
+  const tabBtnMethodology = document.getElementById('tab-btn-methodology');
+
+  const detailsTitle = document.getElementById('skill-details-title');
+  const detailsIcon = document.getElementById('skill-details-icon');
+  const detailsDesc = document.getElementById('skill-details-desc');
+
+  let activeCategoryIndex = 0; // default to Front-End
+
+  function renderCategorySkills() {
+    deviceList.innerHTML = '';
+    const category = skillCategories[activeCategoryIndex];
+
+    category.skills.forEach(skill => {
+      const li = document.createElement('li');
+      li.innerHTML = `⚡ <span>[Device: Online] — ${skill.name}</span>`;
+      li.style.cursor = 'pointer';
+      li.style.padding = '4px 6px';
+      
+      li.onclick = () => {
+        // Toggle selected styling
+        deviceList.querySelectorAll('li').forEach(item => item.classList.remove('selected-item'));
+        li.classList.add('selected-item');
+
+        // Populate device properties panel
+        if (detailsTitle) detailsTitle.textContent = `${skill.name} Properties`;
+        if (detailsIcon) detailsIcon.innerHTML = skill.icon;
+        if (detailsDesc) detailsDesc.textContent = skill.desc;
+      };
+
+      deviceList.appendChild(li);
+    });
+
+    // Reset properties box
+    if (detailsTitle) detailsTitle.textContent = 'Device Properties';
+    if (detailsIcon) detailsIcon.innerHTML = '🔍';
+    if (detailsDesc) detailsDesc.textContent = 'Select a skill component from the list above to view its properties, operational status, and development applications.';
+  }
+
+  function setActiveTab(index, clickedBtn) {
+    activeCategoryIndex = index;
+    
+    // Reset aria-selected state for tab buttons
+    [tabBtnFrontend, tabBtnBackend, tabBtnMethodology].forEach(btn => {
+      if (btn) btn.setAttribute('aria-selected', 'false');
+    });
+    if (clickedBtn) clickedBtn.setAttribute('aria-selected', 'true');
+
+    renderCategorySkills();
+  }
+
+  if (tabBtnFrontend) tabBtnFrontend.onclick = () => setActiveTab(0, tabBtnFrontend);
+  if (tabBtnBackend) tabBtnBackend.onclick = () => setActiveTab(1, tabBtnBackend);
+  if (tabBtnMethodology) tabBtnMethodology.onclick = () => setActiveTab(2, tabBtnMethodology);
+
+  // Initial render
+  renderCategorySkills();
+}
+
+/**
+ * Handles guestbook message logic, persistence using localStorage.
+ */
+function initGuestbook() {
+  const submitBtn = document.getElementById('guestbook-submit');
+  const inputEl = document.getElementById('guestbook-input');
+  const messagesEl = document.getElementById('guestbook-messages');
+  if (!submitBtn || !inputEl || !messagesEl) return;
+
+  const STORAGE_KEY = 'portfolio-guestbook';
+  let messages = [];
+
+  try {
+    messages = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
+      { name: "Anonymous Recruiter", text: "Love the Windows XP theme! Super nostalgic and clean.", date: "2026-06-12 10:15" },
+      { name: "Fellow Dev", text: "Nice vanilla JS details. Good luck with the job search! 🚀", date: "2026-06-15 14:02" }
+    ];
+  } catch (e) {
+    messages = [];
+  }
+
+  function renderMessages() {
+    messagesEl.innerHTML = '';
+    if (messages.length === 0) {
+      messagesEl.innerHTML = '<p style="font-size: 11px; color: #888; text-align: center; margin-top: 20px;">No messages yet. Be the first to sign! ✒️</p>';
+      return;
+    }
+    // Render newest first
+    messages.slice().reverse().forEach(msg => {
+      const card = document.createElement('div');
+      card.className = 'guestbook-msg';
+      card.innerHTML = `
+        <div class="guestbook-msg-meta">
+          <strong>${msg.name}</strong> — <small>${msg.date}</small>
+        </div>
+        <div class="guestbook-msg-text">${msg.text}</div>
+      `;
+      messagesEl.appendChild(card);
+    });
+  }
+
+  submitBtn.onclick = () => {
+    const text = inputEl.value.trim();
+    if (!text) return alert("Please write a message before signing!");
+    
+    const now = new Date();
+    const dateStr = now.getFullYear() + "-" +
+      String(now.getMonth() + 1).padStart(2, '0') + "-" +
+      String(now.getDate()).padStart(2, '0') + " " +
+      String(now.getHours()).padStart(2, '0') + ":" +
+      String(now.getMinutes()).padStart(2, '0');
+
+    const names = ["Vibe Checker", "Tech Enthusiast", "Cool Recruiter", "Retro Lover", "Internet Explorer Fan", "Coffee Addict"];
+    const randomName = names[Math.floor(Math.random() * names.length)];
+
+    messages.push({
+      name: randomName,
+      text: text,
+      date: dateStr
+    });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    inputEl.value = '';
+    renderMessages();
+  };
+
+  renderMessages();
 }

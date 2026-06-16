@@ -99,7 +99,25 @@
       document.querySelectorAll('.project-view-pane').forEach(el => {
         el.classList.add('hidden');
       });
-      document.getElementById(projectId).classList.remove('hidden');
+      const targetPane = document.getElementById(projectId);
+      if (targetPane) {
+        targetPane.classList.remove('hidden');
+        targetPane.style.opacity = '0';
+        targetPane.style.transition = 'opacity 0.2s ease-in-out';
+        setTimeout(() => { targetPane.style.opacity = '1'; }, 10);
+      }
+
+      // Highlight selected tree node
+      const treeEl = document.getElementById('projects-tree');
+      if (treeEl) {
+        treeEl.querySelectorAll('li').forEach(item => {
+          if (item.getAttribute('data-proj-id') === projectId) {
+            item.classList.add('selected-item');
+          } else {
+            item.classList.remove('selected-item');
+          }
+        });
+      }
     }
 
     /**
@@ -132,6 +150,7 @@
             // Render project file item in sidebar
             const li = document.createElement('li');
             li.textContent = `📄 ${p.title}`;
+            li.setAttribute('data-proj-id', p.id);
             li.onclick = () => showProject(p.id);
             treeEl.appendChild(li);
             
@@ -189,25 +208,28 @@
     // Initialize projects on script load
     loadProjects();
 
-    /**
+     /**
      * Helper to load an image from a URL and convert it to base64 JPEG format.
      * jsPDF requires base64 to embed images natively.
      */
     function getBase64Image(url) {
       return new Promise((resolve, reject) => {
         const img = new Image();
-        img.crossOrigin = 'Anonymous';
         img.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-          // Convert to JPEG since jsPDF plays nicely with it (avoids webp issues)
-          const dataURL = canvas.toDataURL('image/jpeg');
-          resolve({ dataURL, width: img.width, height: img.height });
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            // Convert to PNG to preserve alpha channel transparency
+            const dataURL = canvas.toDataURL('image/png');
+            resolve({ dataURL, width: img.width, height: img.height });
+          } catch (err) {
+            reject(new Error("Canvas taint/conversion error: " + err.message));
+          }
         };
-        img.onerror = error => reject(error);
+        img.onerror = error => reject(new Error("Failed to load image resource: " + url));
         img.src = url;
       });
     }
@@ -246,114 +268,253 @@
             doc.addPage();
           }
 
-          // Top Header (Portfolio Branding)
-          doc.setFontSize(10);
-          doc.setTextColor(150, 150, 150);
-          doc.text("Bilgrandov - Tech Portfolio", 14, 12);
+          // 1. Cozy Parchment Background & Mountain Silhouette (using my-gallery header styles)
+          const bgCanvas = document.createElement('canvas');
+          bgCanvas.width = 1440;
+          bgCanvas.height = 1018;
+          const bgCtx = bgCanvas.getContext('2d');
+
+          // Fill background color
+          bgCtx.fillStyle = '#F4EAE0';
+          bgCtx.fillRect(0, 0, 1440, 1018);
+
+          // Draw Back Mountain (#EADBC8)
+          bgCtx.fillStyle = '#EADBC8';
+          bgCtx.beginPath();
+          bgCtx.moveTo(0, 1018);
+          bgCtx.lineTo(250, 1018 - (250 - 80) * 0.96);
+          bgCtx.lineTo(510, 1018 - (250 - 190) * 0.96);
+          bgCtx.lineTo(850, 1018 - (250 - 40) * 0.96);
+          bgCtx.lineTo(1180, 1018 - (250 - 210) * 0.96);
+          bgCtx.lineTo(1440, 1018 - (250 - 100) * 0.96);
+          bgCtx.lineTo(1440, 1018);
+          bgCtx.closePath();
+          bgCtx.fill();
+
+          // Draw Front Mountain (#DAC0A3)
+          bgCtx.fillStyle = '#DAC0A3';
+          bgCtx.beginPath();
+          bgCtx.moveTo(0, 1018);
+          bgCtx.lineTo(180, 1018 - (250 - 150) * 0.96);
+          bgCtx.lineTo(420, 1018 - (250 - 220) * 0.96);
+          bgCtx.lineTo(680, 1018 - (250 - 120) * 0.96);
+          bgCtx.lineTo(1020, 1018 - (250 - 200) * 0.96);
+          bgCtx.lineTo(1290, 1018 - (250 - 130) * 0.96);
+          bgCtx.lineTo(1440, 1018 - (250 - 180) * 0.96);
+          bgCtx.lineTo(1440, 1018);
+          bgCtx.closePath();
+          bgCtx.fill();
+
+          const bgDataURL = bgCanvas.toDataURL('image/png');
+          doc.addImage(bgDataURL, 'PNG', 0, 0, 297, 210);
+
+
+          // 2. Notebook horizontal grid lines
+          doc.setDrawColor(240, 230, 210); // #F0E6D2
+          doc.setLineWidth(0.25);
+          for (let lineY = 24; lineY < 192; lineY += 7) {
+            doc.line(20, lineY, 285, lineY);
+          }
+
+          // 3. Notebook Margin Red Line
+          doc.setDrawColor(224, 90, 71); // #E05A47
+          doc.setLineWidth(0.4);
+          doc.line(26, 0, 26, 210);
+
+          // 4. Spiral Binder Rings on Left Border
+          for (let ringY = 12; ringY < 200; ringY += 14) {
+            // Metallic silver ring loop
+            doc.setDrawColor(180, 190, 200);
+            doc.setLineWidth(1.2);
+            doc.line(4, ringY, 11, ringY);
+
+            // Punch holes
+            doc.setFillColor(45, 58, 58); // Forest/Charcoal
+            doc.circle(4, ringY, 0.7, "F");
+            doc.circle(11, ringY, 0.7, "F");
+          }
+
+          // 5. Retro Postage Category Stamp (Top Right)
+          doc.setFillColor(255, 255, 255);
+          doc.setDrawColor(45, 58, 58);
+          doc.setLineWidth(0.5);
+          doc.rect(225, 8, 58, 14, "FD");
+          // Stamp inner border decoration
+          doc.setDrawColor(230, 161, 92); // Sun gold
+          doc.setLineWidth(0.25);
+          doc.rect(227, 9.5, 54, 11);
+
+          doc.setFontSize(8);
+          doc.setTextColor(45, 58, 58);
+          doc.text(`YEAR: ${p.year}`, 230, 13);
+          const shortCat = p.category.length > 20 ? p.category.substring(0, 18) + '...' : p.category;
+          doc.text(`CAT: ${shortCat.toUpperCase()}`, 230, 17);
+
+          // 6. Project Title (Brutalist style)
+          doc.setFontSize(22);
+          doc.setTextColor(224, 90, 71); // Campfire Orange
+          doc.text(`${p.title}`, 32, 18);
 
           let leftY = 28;
 
-          // Project Title
-          doc.setFontSize(24);
-          doc.setTextColor(36, 94, 219); // Signature taskbar blue
-          doc.text(`${p.title}`, 14, leftY);
-          leftY += 10;
+          // Role info
+          doc.setFontSize(10);
+          doc.setTextColor(45, 93, 78); // Deep Pine Green
+          doc.text(`Operational Role: ${p.role}`, 32, leftY);
+          leftY += 5;
 
-          // Project Meta Data (Role & Year)
-          doc.setFontSize(12);
-          doc.setTextColor(100, 100, 100);
-          doc.text(`Year: ${p.year}   |   Role: ${p.role}`, 14, leftY);
-          leftY += 6;
-          doc.text(`Category: ${p.category}`, 14, leftY);
-          leftY += 15;
+          // Decorative separator line (dashed)
+          doc.setDrawColor(45, 58, 58);
+          doc.setLineWidth(0.3);
+          doc.setLineDashPattern([2, 2], 0);
+          doc.line(32, leftY, 283, leftY);
+          doc.setLineDashPattern([], 0); // reset dash pattern
+          leftY += 8;
 
-          // Responsive Text Column:
-          // If an image exists, constrain text to the left column (90mm width).
-          // If no image exists, allow text to span the entire page width (260mm).
-          const textColumnWidth = p.image ? 90 : 260;
+          // 7. Responsive Text Block width calculation
+          const textColumnWidth = p.image ? 100 : 240;
 
           // Project Description
-          doc.setFontSize(12);
-          doc.setTextColor(50, 50, 50);
-          const lines = doc.splitTextToSize(p.description, textColumnWidth);
-          doc.text(lines, 14, leftY);
-          leftY += (lines.length * 6) + 10;
+          doc.setFontSize(11);
+          doc.setTextColor(45, 58, 58); // Charcoal
+          const descLines = doc.splitTextToSize(p.description, textColumnWidth);
+          doc.text(descLines, 32, leftY);
+          leftY += (descLines.length * 5.5) + 6;
 
-          // Publication Link Integration
+          // Publication Link
           if (p.link) {
-            doc.setFontSize(11);
-            doc.setTextColor(36, 94, 219); // Link blue
-            
-            // Generate link text and bind click event URL
+            doc.setFontSize(10);
+            doc.setTextColor(224, 90, 71); // Campfire Orange
             const linkText = `Link: ${p.link}`;
-            
-            // Note: Truncate excessively long links to prevent overlapping with the image column
-            const shortLink = linkText.length > 50 ? linkText.substring(0, 47) + "..." : linkText;
-            
-            doc.textWithLink(shortLink, 14, leftY, { url: p.link });
-            
-            // Manually draw an underline to signify clickability
+            const targetWidth = p.image ? 100 : 240;
+            let shortLink = linkText;
+            if (doc.getTextWidth(shortLink) > targetWidth) {
+              while (shortLink.length > 0 && doc.getTextWidth(shortLink + "...") > targetWidth) {
+                shortLink = shortLink.substring(0, shortLink.length - 1);
+              }
+              shortLink += "...";
+            }
+            doc.textWithLink(shortLink, 32, leftY, { url: p.link });
+            // Underline
             const textWidth = doc.getTextWidth(shortLink);
-            doc.line(14, leftY + 1, 14 + textWidth, leftY + 1);
-            
-            leftY += 10;
+            doc.setDrawColor(224, 90, 71);
+            doc.setLineWidth(0.25);
+            doc.line(32, leftY + 1, 32 + textWidth, leftY + 1);
+            leftY += 8;
           }
 
-          // Special Project Status (e.g., Work In Progress)
+          // Special status notes (ongoing etc)
           if (p.status) {
-            doc.setFontSize(11);
-            doc.setTextColor(200, 100, 0); // Alert Orange
+            doc.setFontSize(10);
+            doc.setTextColor(230, 161, 92); // Warm Gold
             const statusLines = doc.splitTextToSize(`Status: ${p.status}`, textColumnWidth);
-            doc.text(statusLines, 14, leftY);
-            leftY += (statusLines.length * 6) + 10;
+            doc.text(statusLines, 32, leftY);
+            leftY += (statusLines.length * 5) + 8;
           }
 
-          // Render Screenshot in the Right Column (Pitch Deck Style)
+          // 8. Neo-Brutalist rectangular tag badges
+          if (p.tags && p.tags.length > 0) {
+            let tagX = 32;
+            p.tags.forEach(t => {
+              const tWidth = doc.getTextWidth(t);
+              const badgeW = tWidth + 6;
+              const badgeH = 6;
+
+              // Flat offset shadow
+              doc.setFillColor(45, 58, 58);
+              doc.rect(tagX + 1, leftY + 1, badgeW, badgeH, "F");
+
+              // Badge container
+              if (t === 'ONGOING' || p.category === 'Work In Progress') {
+                doc.setFillColor(255, 235, 204); // gold tint
+              } else {
+                doc.setFillColor(255, 255, 255); // white
+              }
+              doc.setDrawColor(45, 58, 58);
+              doc.setLineWidth(0.4);
+              doc.rect(tagX, leftY, badgeW, badgeH, "FD");
+
+              // Badge text
+              doc.setFontSize(8);
+              doc.setTextColor(45, 58, 58);
+              doc.text(t, tagX + 3, leftY + 4.3);
+
+              tagX += badgeW + 4;
+            });
+          }
+
+          // 9. Polaroid Screenshot layout on the right column
           if (p.image) {
             try {
               const imgData = await getBase64Image(p.image);
               
-              // A4 Landscape Width: 297mm. 
-              // The right column starts at X=115, leaving ~170mm of available width.
-              let imgW = 170;
+              // Max area width X=145 to 283 leaves ~138mm.
+              let imgW = 120;
               let imgH = (imgData.height * imgW) / imgData.width;
               
-              // Constraint max height to prevent the image from being cropped (max 160mm)
-              if (imgH > 160) {
-                 imgH = 160;
+              // Constrain max height
+              if (imgH > 115) {
+                 imgH = 115;
                  imgW = (imgData.width * imgH) / imgData.height;
               }
               
-              // Auto-center the image horizontally within the right column
-              const xPos = 115 + ((170 - imgW) / 2);
+              // Center in the right side area
+              const xPos = 145 + ((130 - imgW) / 2);
+              const yPos = 35;
+
+              // 9a. Draw Flat Hard Shadow of Polaroid card (brutalist offset)
+              doc.setFillColor(45, 58, 58);
+              doc.rect(xPos - 4.5 + 2.5, yPos - 4.5 + 2.5, imgW + 9, imgH + 18, "F");
+
+              // 9b. Draw White Polaroid Card Container
+              doc.setFillColor(255, 255, 255);
+              doc.setDrawColor(45, 58, 58);
+              doc.setLineWidth(0.5);
+              doc.rect(xPos - 4.5, yPos - 4.5, imgW + 9, imgH + 18, "FD");
+
+              // 9c. Render Project image on top (using PNG to preserve transparency)
+              doc.addImage(imgData.dataURL, 'PNG', xPos, yPos, imgW, imgH);
+
+              // 9d. Draw a tilted Washi Tape sticker on top
+              const tapeW = 26;
+              const tapeH = 6;
+              const tapeX = xPos + imgW / 2 - tapeW / 2;
+              const tapeY = yPos - 7;
               
-              doc.addImage(imgData.dataURL, 'JPEG', xPos, 28, imgW, imgH);
+              // Tilted rectangle drawn as polygon coordinates
+              doc.setFillColor(230, 161, 92); // Gold tape
+              doc.triangle(tapeX, tapeY + 1, tapeX + tapeW, tapeY - 1, tapeX + tapeW, tapeY + tapeH - 1, "F");
+              doc.triangle(tapeX, tapeY + 1, tapeX, tapeY + tapeH + 1, tapeX + tapeW, tapeY + tapeH - 1, "F");
+              // Tape dashed edges
+              doc.setDrawColor(45, 58, 58);
+              doc.setLineWidth(0.2);
+              doc.line(tapeX, tapeY + 1, tapeX, tapeY + tapeH + 1);
+              doc.line(tapeX + tapeW, tapeY - 1, tapeX + tapeW, tapeY + tapeH - 1);
             } catch (err) {
               console.warn("Could not load image for PDF:", p.image, err);
             }
           }
           
           // ==========================================
-          // PDF PAGE FOOTER
+          // PDF PAGE FOOTER (Scrapbook style)
           // ==========================================
           
-          // 1. Horizontal Separator Line
-          doc.setDrawColor(200, 200, 200); // Light gray stroke
-          doc.line(14, 194, 283, 194); // (x1, y1, x2, y2)
+          // Separator dotted line
+          doc.setDrawColor(45, 58, 58);
+          doc.setLineWidth(0.3);
+          doc.setLineDashPattern([2, 2], 0);
+          doc.line(32, 194, 283, 194);
+          doc.setLineDashPattern([], 0); // reset
 
-          // Footer Typography Setup
-          doc.setFontSize(10);
-          doc.setTextColor(120, 120, 120);
-
-          // 2. Contact Info (Bottom Left)
-          doc.text("GitHub: github.com/bilgrandov   |   Email: Bilgrandov9902003@gmail.com", 14, 202);
-          
-          // 3. Pagination (Bottom Right)
-          doc.text(`Page ${i + 1} of ${window.portfolioProjects.length}`, 265, 202);
+          // Footer info
+          doc.setFontSize(8);
+          doc.setTextColor(45, 58, 58);
+          doc.text("Compiled by Bilgrandov's Tech Corner Portfolio Project Scrapbook", 32, 201);
+          doc.text(`PAGE ${i + 1} OF ${window.portfolioProjects.length}`, 262, 201);
         }
 
         // Trigger file download
-        doc.save("Bilgrandov_Projects_Presentation.pdf");
+        doc.save("Bilgrandov_Cozy_Scrapbook_Deck.pdf");
 
       } catch (err) {
         console.error(err);

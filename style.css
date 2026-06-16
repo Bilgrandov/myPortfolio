@@ -13,16 +13,17 @@
   --window-bg: #ece9d8;
   --taskbar-bg: #245edb;
   --text-color: #000;
+  --accent-orange: #e65c00;
 }
 
 [data-theme="dark"] {
   --bg-url: url("assets/bg_dark.svg");
-  --window-bg: rgba(0, 10, 30, 0.8);
-  --taskbar-bg: rgba(0, 5, 20, 0.9);
-  --text-color: #e0e0e0;
-  --accent-cyan: #39ff14;
-
-  --title-bar-bg: #245edb;
+  --window-bg: rgba(26, 28, 32, 0.9);
+  --taskbar-bg: #1c1d22;
+  --text-color: #f2f2f7;
+  --accent-cyan: #00e5ff;
+  --accent-orange: #ff8c00;
+  --title-bar-bg: linear-gradient(180deg, #3c3d42 0%, #1f2024 100%);
 }
 
 *,
@@ -261,20 +262,25 @@ img {
   color: #996600;
   overflow: hidden;
   white-space: nowrap;
+  contain: paint;
 }
 
 .marquee-bar .marquee-text {
   display: inline-block;
   animation: marquee 20s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 @keyframes marquee {
   0% {
-    transform: translateX(100%);
+    transform: translate3d(100%, 0, 0);
   }
 
   100% {
-    transform: translateX(-100%);
+    transform: translate3d(-100%, 0, 0);
   }
 }
 
@@ -1256,3 +1262,250 @@ ul.tree-view li.folder {
   border-color: #ff6666;
   color: #ff9999;
 }
+
+/* Royale Noir scrollbar styling */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background-color: #3a3b40 !important;
+  border: 1px solid #1c1d22 !important;
+  box-shadow: inset -2px 0 #2b2c30, inset 1px 1px #5c5d62 !important;
+}
+[data-theme="dark"] ::-webkit-scrollbar-track:vertical,
+[data-theme="dark"] ::-webkit-scrollbar-track:horizontal {
+  background-image: none !important;
+  background-color: #121316 !important;
+}
+
+/* tactile feedback buttons */
+button:not(:disabled):active,
+button:not(:disabled).active {
+  transform: translate(1px, 1px);
+  transition: transform 0.05s ease;
+}
+
+/* custom tree active selection style */
+ul.tree-view li.selected-item {
+  background: #000080 !important;
+  color: #fff !important;
+}
+[data-theme="dark"] ul.tree-view li.selected-item {
+  background: rgba(0, 229, 255, 0.25) !important;
+  color: var(--accent-cyan) !important;
+  outline: 1px dashed rgba(0, 229, 255, 0.5);
+}
+
+/* CRT Controls panel style */
+.crt-config-panel {
+  background: var(--window-bg);
+  border: 1px solid #808080;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff;
+  padding: 8px 12px;
+  margin-top: 10px;
+}
+[data-theme="dark"] .crt-config-panel {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: inset -1px -1px rgba(255, 255, 255, 0.15), inset 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.crt-controls {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 8px;
+  align-items: center;
+}
+.crt-controls span {
+  font-size: 11px;
+  font-weight: bold;
+}
+.crt-btn {
+  min-width: 50px !important;
+  font-size: 10px !important;
+  padding: 2px 6px !important;
+  cursor: pointer;
+}
+
+/* Custom CRT Overlay Adjustments */
+.crt-overlay.crt-off {
+  display: none !important;
+}
+.crt-overlay.crt-low-scanlines::before {
+  opacity: 0.08 !important;
+}
+.crt-overlay.crt-no-flicker::after {
+  animation: none !important;
+  opacity: 0.03 !important;
+}
+
+/* Skills Explorer Layout */
+.skills-explorer {
+  display: flex;
+  height: 400px;
+  background: #fff;
+  border: 1px inset #d5d5d5;
+}
+[data-theme="dark"] .skills-explorer {
+  background: rgba(0, 10, 30, 0.5);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.skills-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid #d5d5d5;
+  background: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+}
+[data-theme="dark"] .skills-sidebar {
+  background: rgba(0, 10, 30, 0.8);
+  border-right-color: rgba(255, 255, 255, 0.1);
+}
+
+.skills-tree-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.skills-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: #fff;
+  position: relative;
+}
+[data-theme="dark"] .skills-content {
+  background: rgba(0, 10, 30, 0.4);
+}
+
+.skill-detail-pane h3 {
+  margin-top: 0;
+  color: #003399;
+}
+[data-theme="dark"] .skill-detail-pane h3 {
+  color: var(--accent-cyan);
+}
+
+.skill-level-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.skill-level-bar {
+  flex: 1;
+  height: 14px;
+  background: #e0e0e0;
+  border: 1px inset #888;
+  overflow: hidden;
+  position: relative;
+}
+[data-theme="dark"] .skill-level-bar {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.skill-level-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3d9e41 0%, #2d8a31 100%);
+  width: 0%;
+  transition: width 0.5s ease-out;
+}
+[data-theme="dark"] .skill-level-fill {
+  background: linear-gradient(90deg, #00bdd6 0%, #00e5ff 100%);
+}
+
+.skill-details-text {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .skills-explorer {
+    flex-direction: column;
+    height: auto;
+  }
+  .skills-sidebar {
+    width: 100%;
+    max-height: 180px;
+    border-right: none;
+    border-bottom: 2px solid #d5d5d5;
+  }
+  .skills-content {
+    min-height: 250px;
+    padding: 16px;
+  }
+}
+
+/* === Guestbook Styling === */
+.guestbook-section {
+  margin-top: 20px;
+  border-top: 1px dashed #ccc;
+  padding-top: 15px;
+}
+[data-theme="dark"] .guestbook-section {
+  border-top-color: #444;
+}
+
+.guestbook-section h3 {
+  font-size: 14px;
+  color: #003399;
+  margin-bottom: 8px;
+}
+[data-theme="dark"] .guestbook-section h3 {
+  color: var(--accent-cyan);
+}
+
+.guestbook-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.guestbook-form textarea {
+  width: 100%;
+  padding: 6px;
+  font-family: var(--font-cute);
+  font-size: 12px;
+}
+
+.guestbook-messages {
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px inset #ccc;
+  background: #fff;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+[data-theme="dark"] .guestbook-messages {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.guestbook-msg {
+  border-bottom: 1px dotted #eee;
+  padding-bottom: 6px;
+  font-size: 11px;
+}
+[data-theme="dark"] .guestbook-msg {
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+.guestbook-msg-meta {
+  color: #666;
+  font-size: 10px;
+  margin-bottom: 2px;
+}
+[data-theme="dark"] .guestbook-msg-meta {
+  color: #888;
+}
+
+.guestbook-msg-text {
+  word-break: break-word;
+}
+
+

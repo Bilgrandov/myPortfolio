@@ -58,13 +58,14 @@
           </div>
         </fieldset>
 
-        <div class="guestbook-section hidden">
+        <div class="guestbook-section">
           <h3>★ Guestbook ★</h3>
-          <div class="guestbook-form">
-            <textarea id="guestbook-input" rows="2" placeholder="Leave a nice message~ (◠‿◠)"></textarea>
-            <button type="button" id="guestbook-submit">✉ Sign!</button>
+          <p style="font-size: 11px; color: #555; margin-bottom: 8px;">The guestbook is undergoing a migration. Coming soon! ⌛</p>
+          <div class="guestbook-form" style="opacity: 0.5; pointer-events: none;">
+            <textarea id="guestbook-input" rows="2" placeholder="Guestbook is offline..." disabled></textarea>
+            <button type="button" id="guestbook-submit" disabled>✉ Sign!</button>
           </div>
-          <div id="guestbook-messages" class="guestbook-messages"></div>
+          <div id="guestbook-messages" class="guestbook-messages" style="display: none;"></div>
         </div>
 
       </div>
