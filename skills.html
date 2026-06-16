@@ -45,8 +45,8 @@
         <div role="tabpanel" id="skills-tabpanel" style="min-height: 380px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 0;">
           <!-- Device list manager box -->
           <div style="flex: 1; min-height: 200px; display: flex; flex-direction: column;">
-            <span style="font-size: 11px; margin-bottom: 4px; color: #555; display: block;">Device Driver list (select a system skill component):</span>
-            <div style="flex: 1; overflow-y: auto; border: 1px inset #ccc; background: #fff; max-height: 220px;">
+            <span style="font-size: 11px; margin-bottom: 4px; color: var(--text-color); opacity: 0.85; display: block;">Device Driver list (select a system skill component):</span>
+            <div style="flex: 1; overflow-y: auto; border: 1px inset var(--input-border, #ccc); background: var(--input-bg, #fff); max-height: 220px;">
               <ul class="tree-view" id="device-list" style="border: none; padding: 4px;">
                 <!-- Dynamically populated skills based on selected category tab -->
                 <li>Loading system components...</li>
@@ -58,7 +58,7 @@
           <fieldset style="flex-shrink: 0; min-height: 120px; margin-bottom: 0;">
             <legend id="skill-details-title">Device Properties</legend>
             <div id="skill-details-body" style="display: flex; gap: 12px; align-items: flex-start;">
-              <div id="skill-details-icon" style="font-size: 32px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: #f0f4ff; border: 1px solid #d2e2f9; border-radius: 4px; flex-shrink: 0;">🔍</div>
+              <div id="skill-details-icon" style="font-size: 32px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--details-icon-bg, #f0f4ff); border: 1px solid var(--details-icon-border, #d2e2f9); border-radius: 4px; flex-shrink: 0;">🔍</div>
               <div>
                 <p id="skill-details-desc" style="font-size: 12px; line-height: 1.5; margin: 0; color: var(--text-color);">Select a skill component from the list above to view its properties, operational status, and development applications.</p>
               </div>

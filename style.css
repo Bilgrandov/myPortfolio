@@ -14,6 +14,10 @@
   --taskbar-bg: #245edb;
   --text-color: #000;
   --accent-orange: #e65c00;
+  --input-bg: #ffffff;
+  --input-border: #7f9db9;
+  --details-icon-bg: #f0f4ff;
+  --details-icon-border: #d2e2f9;
 }
 
 [data-theme="dark"] {
@@ -24,7 +28,12 @@
   --accent-cyan: #00e5ff;
   --accent-orange: #ff8c00;
   --title-bar-bg: linear-gradient(180deg, #3c3d42 0%, #1f2024 100%);
+  --input-bg: rgba(0, 0, 0, 0.4);
+  --input-border: rgba(255, 255, 255, 0.2);
+  --details-icon-bg: rgba(255, 255, 255, 0.05);
+  --details-icon-border: rgba(255, 255, 255, 0.1);
 }
+
 
 *,
 *::before,
@@ -986,6 +995,26 @@ ul.tree-view li.folder {
 [data-theme="dark"] .explorer-content {
   background: rgba(0, 10, 30, 0.5);
   color: #e0e0e0;
+}
+
+[data-theme="dark"] [role="tabpanel"] {
+  background: rgba(0, 10, 30, 0.5) !important;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-color);
+}
+
+[data-theme="dark"] menu[role=tablist] button {
+  background: rgba(0, 0, 0, 0.2);
+  color: #888;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+[data-theme="dark"] menu[role=tablist] button[aria-selected="true"] {
+  background: rgba(0, 10, 30, 0.5) !important;
+  color: var(--accent-cyan);
+  border-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.15) transparent rgba(255, 255, 255, 0.15) !important;
+  box-shadow: none;
 }
 
 [data-theme="dark"] ul.tree-view {

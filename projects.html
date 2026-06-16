@@ -36,7 +36,8 @@
           <!-- Kolom Kiri: Sidebar -->
           <div class="explorer-sidebar">
             <div style="padding: 8px; border-bottom: 1px solid #ccc;">
-              <button id="download-pdf-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 4px; font-weight: bold; cursor: pointer;">
+              <button id="download-pdf-btn"
+                style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 4px; font-weight: bold; cursor: pointer;">
                 <span style="font-size: 16px;">📄</span> Export to PDF
               </button>
             </div>
@@ -52,8 +53,8 @@
 
             <!-- Tampilan Awal (Belum ada yang diklik) -->
             <div id="proj-default" class="project-view-pane">
-              <h2 style="color: #666; text-align: center; margin-top: 50px;">👈 Pilih file proyek di sebelah kiri untuk
-                melihat detailnya...</h2>
+              <h2 style="color: #666; text-align: center; margin-top: 50px;">👈 Choose file project on the left fot
+                detail...</h2>
             </div>
 
             <!-- Wadah Konten Proyek (Kita isi di Langkah 2) -->
@@ -130,22 +131,22 @@
         if (!response.ok) throw new Error('Network response was not ok');
         const projects = await response.json();
         window.portfolioProjects = projects; // Save globally for PDF generator
-        
+
         const treeEl = document.getElementById('projects-tree');
         const viewerEl = document.getElementById('project-viewer');
-        
+
         // Extract unique categories for folder creation
         const categories = [...new Set(projects.map(p => p.category))];
-        
+
         categories.forEach(cat => {
           // Render category folder in sidebar
           const folder = document.createElement('li');
           folder.className = 'folder';
           folder.textContent = `📁 ${cat}`;
           treeEl.appendChild(folder);
-          
+
           const catProjects = projects.filter(p => p.category === cat);
-          
+
           catProjects.forEach(p => {
             // Render project file item in sidebar
             const li = document.createElement('li');
@@ -153,28 +154,28 @@
             li.setAttribute('data-proj-id', p.id);
             li.onclick = () => showProject(p.id);
             treeEl.appendChild(li);
-            
+
             // Construct project content pane
             const pane = document.createElement('div');
             pane.id = p.id;
             pane.className = 'project-view-pane hidden';
-            
+
             // Build dynamic HTML segments
-            const statusHtml = p.status 
-              ? `<div class="project-status-alert"><strong>Current Status:</strong> ${p.status}</div>` 
+            const statusHtml = p.status
+              ? `<div class="project-status-alert"><strong>Current Status:</strong> ${p.status}</div>`
               : '';
-            
-            const imgHtml = p.image 
-              ? `<div class="image-scroll-container"><img src="${p.image}" alt="${p.title}" loading="lazy" width="843" height="422"></div>` 
+
+            const imgHtml = p.image
+              ? `<div class="image-scroll-container"><img src="${p.image}" alt="${p.title}" loading="lazy" width="843" height="422"></div>`
               : '';
-            
+
             const tagsHtml = p.tags.map(t => {
               if (t === 'ONGOING') return `<span class="project-tag-ongoing">${t}</span>`;
               if (p.category === 'Work In Progress') return `<span class="project-tag-wip">${t}</span>`;
               return `<span>${t}</span>`;
             }).join('');
-            
-            const linkHtml = p.link 
+
+            const linkHtml = p.link
               ? `<a href="${p.link}" target="_blank"><button type="button">${p.linkText}</button></a>`
               : `<button type="button" disabled style="${p.linkText.includes('looking') ? 'cursor: help;' : ''}">${p.linkText}</button>`;
 
@@ -195,11 +196,11 @@
                 </div>
               </div>
             `;
-            
+
             viewerEl.appendChild(pane);
           });
         });
-        
+
       } catch (err) {
         console.error("Failed to load projects.json:", err);
       }
@@ -208,10 +209,10 @@
     // Initialize projects on script load
     loadProjects();
 
-     /**
-     * Helper to load an image from a URL and convert it to base64 JPEG format.
-     * jsPDF requires base64 to embed images natively.
-     */
+    /**
+    * Helper to load an image from a URL and convert it to base64 JPEG format.
+    * jsPDF requires base64 to embed images natively.
+    */
     function getBase64Image(url) {
       return new Promise((resolve, reject) => {
         const img = new Image();
@@ -244,7 +245,7 @@
         alert("PDF Library is still loading. Please wait a moment and try again.");
         return;
       }
-      
+
       const btn = document.getElementById('download-pdf-btn');
       const originalBtnHTML = btn.innerHTML;
       btn.innerHTML = `<span style="font-size: 16px;">⏳</span> Generating...`;
@@ -447,17 +448,17 @@
           if (p.image) {
             try {
               const imgData = await getBase64Image(p.image);
-              
+
               // Max area width X=145 to 283 leaves ~138mm.
               let imgW = 120;
               let imgH = (imgData.height * imgW) / imgData.width;
-              
+
               // Constrain max height
               if (imgH > 115) {
-                 imgH = 115;
-                 imgW = (imgData.width * imgH) / imgData.height;
+                imgH = 115;
+                imgW = (imgData.width * imgH) / imgData.height;
               }
-              
+
               // Center in the right side area
               const xPos = 145 + ((130 - imgW) / 2);
               const yPos = 35;
@@ -480,7 +481,7 @@
               const tapeH = 6;
               const tapeX = xPos + imgW / 2 - tapeW / 2;
               const tapeY = yPos - 7;
-              
+
               // Tilted rectangle drawn as polygon coordinates
               doc.setFillColor(230, 161, 92); // Gold tape
               doc.triangle(tapeX, tapeY + 1, tapeX + tapeW, tapeY - 1, tapeX + tapeW, tapeY + tapeH - 1, "F");
@@ -494,11 +495,11 @@
               console.warn("Could not load image for PDF:", p.image, err);
             }
           }
-          
+
           // ==========================================
           // PDF PAGE FOOTER (Scrapbook style)
           // ==========================================
-          
+
           // Separator dotted line
           doc.setDrawColor(45, 58, 58);
           doc.setLineWidth(0.3);

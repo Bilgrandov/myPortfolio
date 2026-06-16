@@ -13,27 +13,27 @@
             "Markdown",
             "ONGOING"
         ],
-        "image": null,
-        "link": null,
-        "linkText": "► You are looking at it!"
+        "image": "assets/my-xpPortfolio.webp",
+        "link": "https://bilgrandov.github.io/myPortfolio",
+        "linkText": "► View Portfolio"
     },
     {
         "id": "proj-jsongallery",
         "category": "Completed",
         "icon": "🖼️",
-        "title": "Dynamic JSON Gallery",
+        "title": "Cozy-MyPhotoGallery",
         "year": "2026",
         "role": "Frontend Developer",
-        "description": "I wanted to understand how platforms like Pinterest render hundreds of images efficiently. Instead of hardcoding HTML, I built a dynamic gallery engine that consumes structured JSON data. To simulate a real-world frontend development environment where backend APIs aren't ready yet, I integrated Lorem Picsum as a Mock API. This project strengthened my understanding of DOM manipulation, data mapping, and responsive grid layouts.",
+        "description": "I created Cozy-MyPhotoGallery to store my best photography work, with a cozy design inspired by the layout and aesthetics of the Yuru Camp website. Technically, it is a dynamic gallery engine that consumes structured JSON data to render grids efficiently. This project strengthened my understanding of DOM manipulation, dynamic data rendering, and responsive client-side design.",
         "status": null,
         "tags": [
             "Vanilla JS",
             "JSON",
-            "Mock API"
+            "Cozy UI"
         ],
-        "image": null,
-        "link": "https://github.com/Bilgrandov/photo-gallery",
-        "linkText": "► View Repository"
+        "image": "assets/cozy-myPhotoGallery.webp",
+        "link": "https://bilgrandov.github.io/photo-gallery/",
+        "linkText": "► Live Project"
     },
     {
         "id": "proj-spotify",
