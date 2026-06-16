@@ -226,8 +226,8 @@
           try {
             const canvas = document.createElement('canvas');
             
-            // Constrain maximum resolution to 800px to optimize PDF file size
-            const maxDim = 800;
+            // Constrain maximum resolution to 500px to optimize PDF file size
+            const maxDim = 500;
             let w = img.width;
             let h = img.height;
             if (w > maxDim || h > maxDim) {
@@ -293,9 +293,12 @@
 
           // 1. Cozy Parchment Background & Mountain Silhouette (using my-gallery header styles)
           const bgCanvas = document.createElement('canvas');
-          bgCanvas.width = 1440;
-          bgCanvas.height = 1018;
+          bgCanvas.width = 800;
+          bgCanvas.height = 566;
           const bgCtx = bgCanvas.getContext('2d');
+          
+          // Auto-scale context to draw original coordinates on a smaller footprint
+          bgCtx.scale(800 / 1440, 566 / 1018);
 
           // Fill background color
           bgCtx.fillStyle = '#F4EAE0';
@@ -328,8 +331,8 @@
           bgCtx.closePath();
           bgCtx.fill();
 
-          // Convert background to JPEG with 0.7 quality (takes much less space than PNG)
-          const bgDataURL = bgCanvas.toDataURL('image/jpeg', 0.7);
+          // Convert background to JPEG with 0.6 quality (takes much less space than PNG)
+          const bgDataURL = bgCanvas.toDataURL('image/jpeg', 0.6);
           doc.addImage(bgDataURL, 'JPEG', 0, 0, 297, 210);
 
 
