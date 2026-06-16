@@ -143,9 +143,26 @@ function initClock() {
  * Initializes the stat counter animation on the homepage.
  * Uses IntersectionObserver to trigger animation when scrolled into view.
  */
-function initStatCounters() {
+async function initStatCounters() {
   const stats = document.querySelectorAll('.stat-num[data-count]');
   if (!stats.length) return;
+
+  // Dynamically fetch projects count from JSON database to update the home page stats counter
+  try {
+    const response = await fetch('data/projects.json');
+    if (response.ok) {
+      const projects = await response.json();
+      stats.forEach(el => {
+        const legend = el.previousElementSibling || el.parentElement.querySelector('legend');
+        if (legend && legend.textContent.trim().toLowerCase() === 'projects') {
+          el.setAttribute('data-count', projects.length);
+        }
+      });
+    }
+  } catch (err) {
+    console.warn("Failed to fetch dynamic projects count for homepage:", err);
+  }
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {

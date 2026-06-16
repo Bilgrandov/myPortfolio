@@ -64,7 +64,7 @@
         </div>
       </div>
       <div class="window-footer">
-        <span><img src="assets/profile.jpg" class="footer-mascot" alt="" loading="lazy" width="24" height="24">2
+        <span id="projects-count-text"><img src="assets/profile.jpg" class="footer-mascot" alt="" loading="lazy" width="24" height="24">5
           projects found</span>
         <span>～ more coming soon! ～</span>
       </div>
@@ -131,6 +131,12 @@
         if (!response.ok) throw new Error('Network response was not ok');
         const projects = await response.json();
         window.portfolioProjects = projects; // Save globally for PDF generator
+        
+        // Update footer project count dynamically
+        const footerCountEl = document.getElementById('projects-count-text');
+        if (footerCountEl) {
+          footerCountEl.innerHTML = `<img src="assets/profile.jpg" class="footer-mascot" alt="" loading="lazy" width="24" height="24">${projects.length} projects found`;
+        }
 
         const treeEl = document.getElementById('projects-tree');
         const viewerEl = document.getElementById('project-viewer');
