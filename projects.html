@@ -225,13 +225,29 @@
         img.onload = () => {
           try {
             const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
+            
+            // Constrain maximum resolution to 800px to optimize PDF file size
+            const maxDim = 800;
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            
+            canvas.width = w;
+            canvas.height = h;
             const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0, w, h);
+            
             // Convert to PNG to preserve alpha channel transparency
             const dataURL = canvas.toDataURL('image/png');
-            resolve({ dataURL, width: img.width, height: img.height });
+            resolve({ dataURL, width: w, height: h });
           } catch (err) {
             reject(new Error("Canvas taint/conversion error: " + err.message));
           }
@@ -312,8 +328,9 @@
           bgCtx.closePath();
           bgCtx.fill();
 
-          const bgDataURL = bgCanvas.toDataURL('image/png');
-          doc.addImage(bgDataURL, 'PNG', 0, 0, 297, 210);
+          // Convert background to JPEG with 0.7 quality (takes much less space than PNG)
+          const bgDataURL = bgCanvas.toDataURL('image/jpeg', 0.7);
+          doc.addImage(bgDataURL, 'JPEG', 0, 0, 297, 210);
 
 
           // 2. Notebook horizontal grid lines
