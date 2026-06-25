@@ -40,5 +40,12 @@
     "title": "My-mind",
     "date": "2026-06-02 23:15",
     "file": "data/posts/my-mind.md"
+  },
+  {
+    "id": 7,
+    "type": "journal",
+    "title": "Perjalanan Apple Developer Academy: Melawan Diri Sendiri",
+    "date": "2026-06-26 01:15",
+    "file": "data/posts/apple-academy-journey.md"
   }
 ]
