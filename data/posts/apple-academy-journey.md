@@ -32,7 +32,7 @@ Saya menghabiskan waktu hampir **6 jam** hanya untuk memecahkan masalah ini. Pro
 
 Akhirnya, saya menemukan solusi teknis: membuat dua modul kamera HP agar terbaca sebagai *integrated webcam* di sistem Linux saya. Saya menyambungkan modul dari aplikasi webcam HP dan modul virtual video yang saya buat sendiri. 
 
-Karena setup kamera berhasil berjalan pada saat itu juga, saya berpikir: *"Mumpung sistem ini sedang bisa dan tidak error, daripada besok bermasalah lagi, lebih baik saya ambil tes online-nya sekarang juga."* Malam itu, saya memutuskan langsung memulai tes ujian.
+Karena setup kamera berhasil berjalan pada saat itu juga, saya berpikir: *"Mumpung sistem ini sedang bisa dan tidak error, daripada besok bermasalah lagi, lebih baik saya ambil tes onlinenya sekarang juga."* Malam itu, saya memutuskan langsung memulai tes ujian.
 
 ---
 
