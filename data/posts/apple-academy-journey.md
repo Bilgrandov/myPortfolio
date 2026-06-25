@@ -46,7 +46,7 @@ Menariknya, saya menyelesaikan ujian ini hanya dalam waktu 1 jam dari total 2 ja
 *   **Pertama:** Jika saya membaca ulang soal logika yang memang sudah membuat saya bingung dari awal, membacanya berkali-kali pun tidak akan memunculkan jawaban secara ajaib. Saya memilih mempercayai insting pertama saya.
 *   **Kedua (dan yang paling important):** Saya sangat takut terjadi mati lampu (padam listrik) di tengah ujian. Kejadian mati lampu adalah hal di luar kendali yang bisa langsung menggagalkan tes saya. Jadi, saya memutuskan untuk bergerak cepat.
 
-Prinsip saya selama ujian kemarin: **Ragu $\rightarrow$ Pikir $\rightarrow$ Pakai Perasaan dan Intuisi $\rightarrow$ Pilih $\rightarrow$ Lanjut.** Cukup begitu saja.
+Prinsip saya selama ujian kemarin: **Ragu  → Pikir  → Pakai Perasaan dan Intuisi  → Pilih  → Lanjut.** Cukup begitu saja.
 
 ---
 
