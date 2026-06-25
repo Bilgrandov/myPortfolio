@@ -52,6 +52,6 @@ Prinsip saya selama ujian kemarin: **Ragu  → Pikir  → Pakai Perasaan dan Int
 
 ## Penutup
 
-Perjuangan awal telah selesai. Jurnal ini akan terus saya perbarui saat nanti saya menerima email pengumuman dari Apple Developer Academy—apakah itu berupa email penolakan, atau undangan untuk lanjut ke tahap interview. 
+Perjuangan awal telah selesai. Jurnal ini akan terus saya perbarui saat nanti saya menerima email pengumuman dari Apple Developer Academy apakah itu berupa email penolakan, atau undangan untuk lanjut ke tahap interview. 
 
 Apapun hasilnya nanti, perjalanan mengalahkan rasa takut dan keterbatasan diri ini sudah menjadi kemenangan tersendiri bagi saya.
