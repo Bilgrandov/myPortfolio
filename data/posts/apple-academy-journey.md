@@ -1,4 +1,4 @@
-# Perjalanan Apple Developer Academy: Melawan Diri Sendiri
+# Perjalanan Daftar Apple Developer Academy
 
 Semua ini bermula ketika saya melihat konten tentang Apple Developer Academy lewat *theodevid*. Konten itu membuat saya tertarik untuk mendaftar. Alasan utama saya sederhana: saya ingin mencari lingkungan yang berisi orang-orang produktif, agar saya pun terbawa untuk menjadi produktif. Tentu saja, ini juga tentang karier. Saya melihat alumni akademi ini mendapatkan pekerjaan dan masa depan yang lebih baik, dan saya ingin menjadi salah satu dari mereka untuk menggapai mimpi-mimpi saya.
 
@@ -24,7 +24,7 @@ Perasaan ini mengingatkan saya pada trauma kegagalan SBMPTN dulu. Sebagai lulusa
 
 ---
 
-## 🛠️ Perjuangan 6 Jam Mengulik Webcam di Linux
+## 6 Jam Troubleshooting Webcam di Linux
 
 Sehari sebelum ujian, masalah teknis besar muncul. Webcam bawaan laptop saya ternyata rusak. Solusi alternatifnya adalah menggunakan kamera HP sebagai webcam eksternal. Namun, masalah baru muncul: *website* ujian tidak mendeteksi kamera HP tersebut.
 
@@ -36,7 +36,7 @@ Karena setup kamera berhasil berjalan pada saat itu juga, saya berpikir: *"Mumpu
 
 ---
 
-## 💻 Tes Online: "Ragu, Pikir, Pakai Perasaan, Pilih, Lanjut"
+## Tes Online: "Ragu, Pikir, Pakai Perasaan, Pilih, Lanjut"
 
 Saat soal-soal tes online muncul di layar, jujur saja saya merasa sedikit *zonk*. Latihan yang saya lakukan kemarin ternyata hanya terpakai sebagian kecil saja. Untuk soal logika lainnya, saya hampir sepenuhnya mengandalkan perasaan dan intuisi. *"Kayaknya ini yang benar dah, ya sudah ini ae."* Satu-satunya tips yang benar benar terpakai adalah metode eliminasi pilihan jawaban.
 
@@ -50,7 +50,7 @@ Prinsip saya selama ujian kemarin: **Ragu $\rightarrow$ Pikir $\rightarrow$ Paka
 
 ---
 
-## 📌 Penutup
+## Penutup
 
 Perjuangan awal telah selesai. Jurnal ini akan terus saya perbarui saat nanti saya menerima email pengumuman dari Apple Developer Academy—apakah itu berupa email penolakan, atau undangan untuk lanjut ke tahap interview. 
 
