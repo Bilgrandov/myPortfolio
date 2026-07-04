@@ -1,15 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <defs>
-    <linearGradient id="win7Bg" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#3399FF; stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#003366; stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="curveGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#FFFFFF; stop-opacity:0.4" />
-      <stop offset="50%" style="stop-color:#99CCFF; stop-opacity:0.2" />
-      <stop offset="100%" style="stop-color:#FFFFFF; stop-opacity:0" />
+    <!-- Soft dot grid pattern -->
+    <pattern id="dotgrid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="1.2" fill="#8ab4d4" fill-opacity="0.35"/>
+    </pattern>
+    <!-- Very subtle top vignette gradient -->
+    <linearGradient id="vignette" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ccdff0; stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#ddeaf7; stop-opacity:0" />
     </linearGradient>
   </defs>
-  <rect width="100%" height="100%" fill="url(#win7Bg)" />
-  <path d="M 0 300 Q 400 100 800 300 T 1600 300 V 1000 H 0 Z" fill="url(#curveGrad1)" opacity="0.3" />
+  <!-- Base: warm soft blue-white -->
+  <rect width="100%" height="100%" fill="#dce9f5"/>
+  <!-- Dot grid overlay -->
+  <rect width="100%" height="100%" fill="url(#dotgrid)"/>
+  <!-- Soft vignette at top to add depth -->
+  <rect width="100%" height="60%" fill="url(#vignette)"/>
 </svg>
