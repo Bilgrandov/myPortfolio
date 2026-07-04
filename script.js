@@ -361,6 +361,12 @@ async function initLatestPostsTeaser() {
 
   await ensurePostsFetched();
 
+  // Update "Posts Written" stat counter on homepage
+  const statPosts = document.getElementById('stat-posts');
+  if (statPosts) {
+    animateCount(statPosts, allPostsData.length);
+  }
+
   const posts = allPostsData.length ? allPostsData : [];
   const latest = posts.slice(0, 2);
   if (latest.length === 0) return;
@@ -631,7 +637,7 @@ const skillCategories = [
     icon: "🛠️",
     skills: [
       { id: "skill-uml", name: "UML Design", icon: "<span style='font-size: 28px;'>📐</span>", level: 75, desc: "Unified Modeling Language. Creating flowcharts, use case diagrams, and database relational schemas before writing code to ensure correct software architecture." },
-      { id: "skill-ai", name: "AI Site Builder", icon: "<span style='font-size: 28px;'>🤖</span>", level: 95, desc: "Leveraging state-of-the-art LLMs and AI coding agents to accelerate development, analyze complexity, write automated unit tests, and brainstorm advanced visual designs." }
+      { id: "skill-git", name: "Git & Version Control", icon: '<i class="devicon-git-plain colored" style="font-size: 32px;"></i>', level: 80, desc: "Daily use of Git for source control: branching strategies, commits, merges, and pull requests via GitHub. Comfortable working in collaborative repositories and managing project history." }
     ]
   }
 ];
