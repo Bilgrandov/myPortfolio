@@ -219,12 +219,12 @@
 
             // Inject assembled HTML into pane
             pane.innerHTML = `
-              <div style="padding: 8px 12px; border-bottom: 1px solid #ccc; background: #eaeaea; display: flex; align-items: center; gap: 8px;">
+              <div style="margin: -24px -24px 16px -24px; padding: 8px 12px; border-bottom: 1px solid #ccc; background: #eaeaea; display: flex; align-items: center; gap: 8px;">
                 <button onclick="showProject('proj-default')" style="cursor: pointer; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px;">
                   🔙 Back to Projects
                 </button>
               </div>
-              <div class="project-body" style="padding: 16px;">
+              <div class="project-body">
                 <div class="project-icon" ${p.category === 'Work In Progress' ? 'style="background: #fff3e6; border-color: #ffcc80;"' : ''}>${p.icon}</div>
                 <div class="project-details">
                   <h3 style="margin-top: 0; font-size: 18px; ${p.category === 'Work In Progress' ? 'color: #cc7a00;' : ''}">${p.title}</h3>
