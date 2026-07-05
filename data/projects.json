@@ -73,6 +73,25 @@
         "linkText": "► Private Project"
     },
     {
+        "id": "proj-techcorner-cms",
+        "category": "Completed",
+        "icon": "⚙️",
+        "title": "TechCorner Headless CMS",
+        "year": "2026",
+        "role": "Fullstack Developer",
+        "description": "A custom headless CMS engine designed specifically to manage contents for my personal portfolio. Built with HTML, CSS, and Vanilla JS, integrated with Supabase Auth for session handling, PostgreSQL database for persistent storage, client-side caching (SessionStorage) for performance optimization, and DOMPurify for sanitizing markdown input previews.",
+        "status": null,
+        "tags": [
+            "Vanilla JS",
+            "Supabase",
+            "REST API",
+            "Markdown"
+        ],
+        "image": "assets/techcorner_cms.png",
+        "link": "https://bilgrandov.github.io/techcorner-cms/",
+        "linkText": "► Launch CMS"
+    },
+    {
         "id": "proj-personaltraining",
         "category": "Work In Progress",
         "icon": "📚",
