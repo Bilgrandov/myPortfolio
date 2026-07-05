@@ -111,6 +111,16 @@
       document.querySelectorAll('.project-view-pane').forEach(el => {
         el.classList.add('hidden');
       });
+
+      const containerEl = document.querySelector('.explorer-container');
+      if (containerEl) {
+        if (projectId === 'proj-default') {
+          containerEl.classList.remove('view-details');
+        } else {
+          containerEl.classList.add('view-details');
+        }
+      }
+
       const targetPane = document.getElementById(projectId);
       if (targetPane) {
         targetPane.classList.remove('hidden');

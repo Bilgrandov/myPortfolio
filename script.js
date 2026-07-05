@@ -408,7 +408,10 @@ async function initPosts() {
       });
     }
 
+    const containerEl = document.querySelector('.explorer-container');
+
     if (!hash || !hash.startsWith('#post-')) {
+      if (containerEl) containerEl.classList.remove('view-details');
       if (indexView) {
         indexView.classList.remove('hidden');
         indexView.style.opacity = '0';
@@ -423,6 +426,7 @@ async function initPosts() {
     const post = allPostsData.find(p => p.id === id);
 
     if (post) {
+      if (containerEl) containerEl.classList.add('view-details');
       if (indexView) indexView.classList.add('hidden');
       if (singleView) {
         singleView.classList.remove('hidden');
