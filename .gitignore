@@ -4,3 +4,6 @@ portfolio_study_notes.md
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Config keys
+supabase.config.js

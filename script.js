@@ -191,41 +191,111 @@ let allPostsData = [];
 /**
  * Fetches blog posts from Supabase database.
  * Sorts them in descending order by creation date.
+ * Implements SessionStorage caching and handles database connection errors with an XP style modal.
  */
 async function ensurePostsFetched() {
-  if (allPostsData.length === 0) {
+  if (allPostsData.length > 0) return;
+
+  // Caching: Coba baca dari sessionStorage
+  const cached = sessionStorage.getItem('techcorner_posts_cache');
+  if (cached) {
     try {
-      const response = await fetch(
-        `${SUPABASE_URL}/rest/v1/posts?select=*&order=created_at.desc`,
-        {
-          headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-          }
-        }
-      );
-
-      if (!response.ok) throw new Error(`Supabase error: ${response.status}`);
-
-      const data = await response.json();
-
-      // Map Supabase schema ke format yang dipakai portfolio
-      allPostsData = data.map(post => ({
-        id:      post.id,
-        type:    post.type,
-        title:   post.title,
-        content: post.content || '',
-        // Format created_at (ISO) → "2026-07-05 10:30"
-        date:    post.created_at
-                   ? post.created_at.slice(0, 16).replace('T', ' ')
-                   : ''
-      }));
-
-    } catch (err) {
-      console.error('Failed to fetch from Supabase:', err);
-      allPostsData = [];
+      allPostsData = JSON.parse(cached);
+      return;
+    } catch (e) {
+      console.warn('Failed to parse cached posts, fetching fresh data.');
     }
   }
+
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/posts?select=*&order=created_at.desc`,
+      {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        }
+      }
+    );
+
+    if (!response.ok) throw new Error(`Supabase error: ${response.status}`);
+
+    const data = await response.json();
+
+    // Map Supabase schema ke format yang dipakai portfolio
+    allPostsData = data.map(post => ({
+      id:      post.id,
+      type:    post.type,
+      title:   post.title,
+      content: post.content || '',
+      // Format created_at (ISO) → "2026-07-05 10:30"
+      date:    post.created_at
+                 ? post.created_at.slice(0, 16).replace('T', ' ')
+                 : ''
+    }));
+
+    // Simpan ke cache sessionStorage
+    sessionStorage.setItem('techcorner_posts_cache', JSON.stringify(allPostsData));
+
+  } catch (err) {
+    console.error('Failed to fetch from Supabase:', err);
+    allPostsData = [];
+    showXPErrorDialog(
+      "Database Connection Failed",
+      "Could not retrieve articles from Supabase. The database server might be sleeping or offline. Please check your internet connection."
+    );
+  }
+}
+
+/**
+ * Renders a dynamic, styled Windows XP error dialog box when Supabase connection fails.
+ */
+function showXPErrorDialog(title, message) {
+  // Cegah duplikat error modal
+  if (document.getElementById('xp-error-modal')) return;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'xp-error-modal';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    font-family: 'MS Sans Serif', 'Tahoma', sans-serif;
+  `;
+
+  overlay.innerHTML = `
+    <div class="window" style="width: 380px; box-shadow: 2px 2px 20px rgba(0,0,0,0.5);">
+      <div class="title-bar" style="background: linear-gradient(180deg, #e13222 0%, #b21810 100%) !important;">
+        <div class="title-bar-text" style="color: white; font-weight: bold;">⚠️ Connection Error</div>
+        <div class="title-bar-controls">
+          <button aria-label="Close" class="error-close-btn"></button>
+        </div>
+      </div>
+      <div class="window-body" style="padding: 16px; display: flex; flex-direction: column; gap: 16px; align-items: center;">
+        <div style="display: flex; gap: 16px; align-items: flex-start; text-align: left; width: 100%;">
+          <span style="font-size: 38px; line-height: 1; user-select: none;">❌</span>
+          <div style="font-size: 12px; color: #000; line-height: 1.5;">
+            <strong style="font-size: 13px;">${title}</strong><br>
+            <span style="margin-top: 4px; display: inline-block;">${message}</span>
+          </div>
+        </div>
+        <button class="error-ok-btn" style="padding: 4px 20px; font-weight: bold; cursor: pointer; font-family: inherit; font-size: 12px;">OK</button>
+      </div>
+    </div>
+  `;
+
+  const closeDialog = () => overlay.remove();
+  overlay.querySelector('.error-close-btn').addEventListener('click', closeDialog);
+  overlay.querySelector('.error-ok-btn').addEventListener('click', closeDialog);
+
+  document.body.appendChild(overlay);
 }
 
 
