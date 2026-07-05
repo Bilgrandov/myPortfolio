@@ -303,7 +303,6 @@ async function initPosts() {
             item.style.cursor = 'pointer';
             item.style.color = 'var(--text-color, #000)';
             item.style.textDecoration = 'underline';
-            item.style.marginBottom = '4px';
             item.innerHTML = `📄 <strong>${p.title}</strong> — <small>${p.date}</small>`;
             item.onclick = () => window.location.hash = `post-${p.id}`;
             idxList.appendChild(item);
