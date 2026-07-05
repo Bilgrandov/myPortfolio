@@ -53,7 +53,13 @@
 
             <!-- Tampilan Awal (Belum ada yang diklik) -->
             <div id="proj-default" class="project-view-pane">
-              <h2 style="color: #666; text-align: center; margin-top: 50px;">👈 Choose a project from the left panel for details...</h2>
+              <div class="explorer-index" id="explorer-index" style="padding: 16px;">
+                <h2>Select a project to view details</h2>
+                <p>Or browse the categories below:</p>
+                <div id="index-projects-list" style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+                  <!-- Index items will be injected here dynamically -->
+                </div>
+              </div>
             </div>
 
             <!-- Wadah Konten Proyek (Kita isi di Langkah 2) -->
@@ -140,6 +146,11 @@
 
         const treeEl = document.getElementById('projects-tree');
         const viewerEl = document.getElementById('project-viewer');
+        const indexListEl = document.getElementById('index-projects-list');
+
+        if (indexListEl) {
+          indexListEl.innerHTML = '';
+        }
 
         // Extract unique categories for folder creation
         const categories = [...new Set(projects.map(p => p.category))];
@@ -151,6 +162,15 @@
           folder.textContent = `📁 ${cat}`;
           treeEl.appendChild(folder);
 
+          // Add category section to index view
+          if (indexListEl) {
+            const catHeader = document.createElement('div');
+            catHeader.style.fontWeight = 'bold';
+            catHeader.style.marginTop = '8px';
+            catHeader.innerHTML = `📁 ${cat}`;
+            indexListEl.appendChild(catHeader);
+          }
+
           const catProjects = projects.filter(p => p.category === cat);
 
           catProjects.forEach(p => {
@@ -160,6 +180,18 @@
             li.setAttribute('data-proj-id', p.id);
             li.onclick = () => showProject(p.id);
             treeEl.appendChild(li);
+
+            // Add project link to index view
+            if (indexListEl) {
+              const item = document.createElement('div');
+              item.style.paddingLeft = '20px';
+              item.style.cursor = 'pointer';
+              item.style.color = 'var(--text-color, #000)';
+              item.style.textDecoration = 'underline';
+              item.innerHTML = `📄 <strong>${p.title}</strong> — <small>${p.role} (${p.year})</small>`;
+              item.onclick = () => showProject(p.id);
+              indexListEl.appendChild(item);
+            }
 
             // Construct project content pane
             const pane = document.createElement('div');
@@ -187,7 +219,12 @@
 
             // Inject assembled HTML into pane
             pane.innerHTML = `
-              <div class="project-body">
+              <div style="padding: 8px 12px; border-bottom: 1px solid #ccc; background: #eaeaea; display: flex; align-items: center; gap: 8px;">
+                <button onclick="showProject('proj-default')" style="cursor: pointer; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px;">
+                  🔙 Back to Projects
+                </button>
+              </div>
+              <div class="project-body" style="padding: 16px;">
                 <div class="project-icon" ${p.category === 'Work In Progress' ? 'style="background: #fff3e6; border-color: #ffcc80;"' : ''}>${p.icon}</div>
                 <div class="project-details">
                   <h3 style="margin-top: 0; font-size: 18px; ${p.category === 'Work In Progress' ? 'color: #cc7a00;' : ''}">${p.title}</h3>
