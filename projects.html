@@ -132,15 +132,18 @@
       }
     }
 
-    /**
-     * Fetches project data from JSON and dynamically constructs the file explorer UI.
-     * Generates both the sidebar navigation tree and the main content panes.
-     */
     async function loadProjects() {
       try {
-        const response = await fetch('data/projects.json');
-        if (!response.ok) throw new Error('Network response was not ok');
-        const projects = await response.json();
+        let projects;
+        const cached = sessionStorage.getItem('techcorner_projects_cache');
+        if (cached) {
+          projects = JSON.parse(cached);
+        } else {
+          const response = await fetch('data/projects.json');
+          if (!response.ok) throw new Error('Network response was not ok');
+          projects = await response.json();
+          sessionStorage.setItem('techcorner_projects_cache', JSON.stringify(projects));
+        }
         window.portfolioProjects = projects; // Save globally for PDF generator
         
         // Update footer project count dynamically
@@ -165,6 +168,7 @@
           const folder = document.createElement('li');
           folder.className = 'folder';
           folder.textContent = `📁 ${cat}`;
+          folder.setAttribute('tabindex', '0');
           treeEl.appendChild(folder);
 
           // Add category section to index view
@@ -183,7 +187,14 @@
             const li = document.createElement('li');
             li.textContent = `📄 ${p.title}`;
             li.setAttribute('data-proj-id', p.id);
+            li.setAttribute('tabindex', '0');
             li.onclick = () => showProject(p.id);
+            li.onkeydown = (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                showProject(p.id);
+              }
+            };
             treeEl.appendChild(li);
 
             // Add project link to index view
@@ -193,8 +204,15 @@
               item.style.cursor = 'pointer';
               item.style.color = 'var(--text-color, #000)';
               item.style.textDecoration = 'underline';
+              item.setAttribute('tabindex', '0');
               item.innerHTML = `📄 <strong>${p.title}</strong> — <small>${p.role} (${p.year})</small>`;
               item.onclick = () => showProject(p.id);
+              item.onkeydown = (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  showProject(p.id);
+                }
+              };
               indexListEl.appendChild(item);
             }
 

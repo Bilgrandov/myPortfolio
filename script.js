@@ -323,12 +323,20 @@ async function initPosts() {
         const folder = document.createElement('li');
         folder.className = 'folder';
         folder.textContent = `📁 ${cat}`;
+        folder.setAttribute('tabindex', '0');
         treeEl.appendChild(folder);
         posts.forEach(p => {
           const li = document.createElement('li');
           li.textContent = `📄 ${p.title}`;
           li.setAttribute('data-post-id', p.id);
+          li.setAttribute('tabindex', '0');
           li.onclick = () => window.location.hash = `post-${p.id}`;
+          li.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              window.location.hash = `post-${p.id}`;
+            }
+          };
           treeEl.appendChild(li);
         });
       }
@@ -373,8 +381,15 @@ async function initPosts() {
             item.style.cursor = 'pointer';
             item.style.color = 'var(--text-color, #000)';
             item.style.textDecoration = 'underline';
+            item.setAttribute('tabindex', '0');
             item.innerHTML = `📄 <strong>${p.title}</strong> — <small>${p.date}</small>`;
             item.onclick = () => window.location.hash = `post-${p.id}`;
+            item.onkeydown = (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.location.hash = `post-${p.id}`;
+              }
+            };
             idxList.appendChild(item);
           });
         }
