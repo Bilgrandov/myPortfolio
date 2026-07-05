@@ -239,11 +239,16 @@ async function initPosts() {
 
   await ensurePostsFetched();
 
-  function renderTree() {
+  function renderTree(query = '') {
     treeEl.innerHTML = '';
+
+    const filtered = query
+      ? allPostsData.filter(p => p.title.toLowerCase().includes(query.toLowerCase()))
+      : allPostsData;
+
     const cats = ['JOURNAL', 'BLOG', 'CP'];
     cats.forEach(cat => {
-      const posts = allPostsData.filter(p => p.type.toUpperCase() === cat);
+      const posts = filtered.filter(p => p.type.toUpperCase() === cat);
       if (posts.length) {
         const folder = document.createElement('li');
         folder.className = 'folder';
@@ -258,6 +263,16 @@ async function initPosts() {
         });
       }
     });
+
+    // Tampilkan pesan jika hasil kosong
+    if (filtered.length === 0 && query) {
+      const li = document.createElement('li');
+      li.style.color = 'var(--text-muted, #888)';
+      li.style.fontStyle = 'italic';
+      li.style.padding = '4px 0';
+      li.textContent = 'No results found.';
+      treeEl.appendChild(li);
+    }
 
     const postCount = document.getElementById('post-count');
     if (postCount) postCount.textContent = allPostsData.length;
@@ -371,6 +386,14 @@ async function initPosts() {
   renderTree();
   renderContentpane();
   window.addEventListener('hashchange', renderContentpane);
+
+  // Search handler
+  const searchInput = document.getElementById('post-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      renderTree(searchInput.value.trim());
+    });
+  }
 }
 
 /**
