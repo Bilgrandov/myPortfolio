@@ -189,23 +189,45 @@ function animateCount(el, target) {
 let allPostsData = [];
 
 /**
- * Fetches blog and journal posts from the data/posts.json database.
- * Sorts them in descending order by date.
+ * Fetches blog posts from Supabase database.
+ * Sorts them in descending order by creation date.
  */
 async function ensurePostsFetched() {
   if (allPostsData.length === 0) {
     try {
-      const response = await fetch('data/posts.json');
-      allPostsData = await response.json();
-      allPostsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/posts?select=*&order=created_at.desc`,
+        {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        }
+      );
+
+      if (!response.ok) throw new Error(`Supabase error: ${response.status}`);
+
+      const data = await response.json();
+
+      // Map Supabase schema ke format yang dipakai portfolio
+      allPostsData = data.map(post => ({
+        id:      post.id,
+        type:    post.type,
+        title:   post.title,
+        content: post.content || '',
+        // Format created_at (ISO) → "2026-07-05 10:30"
+        date:    post.created_at
+                   ? post.created_at.slice(0, 16).replace('T', ' ')
+                   : ''
+      }));
+
     } catch (err) {
-      allPostsData = [
-        { id: 1, type: "journal", title: "Starting the Kirby-Clone Project", date: "2026-04-15 10:00", content: "Today I set up the basic XP.css structure. Nostalgia hitting hard!" },
-        { id: 2, type: "blog", title: "Why Markdown is Essential", date: "2026-04-16 14:30", content: "### Benefits\n- It's fast\n- It's portable" }
-      ];
+      console.error('Failed to fetch from Supabase:', err);
+      allPostsData = [];
     }
   }
 }
+
 
 /**
  * Initializes the post explorer interface on the posts.html page.
