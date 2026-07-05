@@ -324,7 +324,12 @@ async function initPosts() {
     }
 
     if (!hash || !hash.startsWith('#post-')) {
-      if (indexView) indexView.classList.remove('hidden');
+      if (indexView) {
+        indexView.classList.remove('hidden');
+        indexView.style.opacity = '0';
+        indexView.style.transition = 'opacity 0.2s ease-in-out';
+        setTimeout(() => { indexView.style.opacity = '1'; }, 10);
+      }
       if (singleView) singleView.classList.add('hidden');
       return;
     }
@@ -334,7 +339,12 @@ async function initPosts() {
 
     if (post) {
       if (indexView) indexView.classList.add('hidden');
-      if (singleView) singleView.classList.remove('hidden');
+      if (singleView) {
+        singleView.classList.remove('hidden');
+        singleView.style.opacity = '0';
+        singleView.style.transition = 'opacity 0.2s ease-in-out';
+        setTimeout(() => { singleView.style.opacity = '1'; }, 10);
+      }
 
       const titleEl = document.getElementById('view-title');
       const dateEl = document.getElementById('view-date');
