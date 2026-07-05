@@ -287,15 +287,28 @@ async function initPosts() {
     // Render index list
     if (idxList && idxList.children.length === 0) {
       idxList.innerHTML = '';
-      allPostsData.forEach(p => {
-        const item = document.createElement('div');
-        item.style.cursor = 'pointer';
-        item.style.color = 'var(--text-color, #000)';
-        item.style.textDecoration = 'underline';
-        item.style.marginBottom = '8px';
-        item.innerHTML = `📄 <strong>${p.title}</strong> — <small>${p.date}</small>`;
-        item.onclick = () => window.location.hash = `post-${p.id}`;
-        idxList.appendChild(item);
+      const cats = ['JOURNAL', 'BLOG', 'CP'];
+      cats.forEach(cat => {
+        const posts = allPostsData.filter(p => p.type.toUpperCase() === cat);
+        if (posts.length) {
+          const catHeader = document.createElement('div');
+          catHeader.style.fontWeight = 'bold';
+          catHeader.style.marginTop = '8px';
+          catHeader.innerHTML = `📁 ${cat}`;
+          idxList.appendChild(catHeader);
+
+          posts.forEach(p => {
+            const item = document.createElement('div');
+            item.style.paddingLeft = '20px';
+            item.style.cursor = 'pointer';
+            item.style.color = 'var(--text-color, #000)';
+            item.style.textDecoration = 'underline';
+            item.style.marginBottom = '4px';
+            item.innerHTML = `📄 <strong>${p.title}</strong> — <small>${p.date}</small>`;
+            item.onclick = () => window.location.hash = `post-${p.id}`;
+            idxList.appendChild(item);
+          });
+        }
       });
     }
 
