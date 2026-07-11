@@ -52,6 +52,11 @@ Prinsip saya selama ujian kemarin: **Ragu  → Pikir  → Pakai Perasaan dan Int
 
 ## Penutup
 
-Perjuangan awal telah selesai. Jurnal ini akan terus saya perbarui saat nanti saya menerima email pengumuman dari Apple Developer Academy apakah itu berupa email penolakan, atau undangan untuk lanjut ke tahap interview. 
+**Update (11 Juli 2026):**
+Ternyata hasil akhir menyatakan bahwa saya tidak diterima di seleksi kali ini. 
 
-Apapun hasilnya nanti, perjalanan mengalahkan rasa takut dan keterbatasan diri ini sudah menjadi kemenangan tersendiri bagi saya.
+Meskipun mengecewakan, ini menjadi cermin bagi saya. Masih ada hal yang harus saya benahi ke depannya, mulai dari *story* portofolio saya yang mungkin dirasa kurang kuat, hingga kemampuan menjawab soal-soal logika (*logic test*) yang masih perlu saya asah dan perkuat lagi. 
+
+Namun, di atas semua itu, perjalanan ini telah memberikan banyak pelajaran berharga tentang bagaimana mengalahkan rasa takut dan berani melangkah keluar dari zona nyaman.
+
+Sekian dari perjalanan di Apple Developer Academy 2026 ini. Perjuangan untuk terus belajar dan bertumbuh tidak akan terhenti di sini! 
