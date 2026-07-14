@@ -714,66 +714,51 @@ function initThemeSwitcher() {
 }
 
 /**
- * Initializes the CRT Monitor controls and applies saved states.
+ * Initializes the CRT Monitor On/Off toggle.
  */
 function initCrtConfig() {
   const crt = document.querySelector('.crt-overlay');
   if (!crt) return;
 
-  // Read saved configurations
-  let scanlines = localStorage.getItem('crt-scanlines') || 'low'; // default to low
-  let flicker = localStorage.getItem('crt-flicker') || 'on'; // default to on
+  // Baca state tersimpan — default: on
+  let enabled = localStorage.getItem('crt-enabled') !== 'false';
 
-  // Function to apply classes based on config
-  function applyCrtConfig() {
-    // Reset scanline classes
-    crt.classList.remove('crt-off', 'crt-low-scanlines');
-    if (scanlines === 'off') {
+  function applyState() {
+    if (enabled) {
+      crt.classList.remove('crt-off');
+    } else {
       crt.classList.add('crt-off');
-    } else if (scanlines === 'low') {
-      crt.classList.add('crt-low-scanlines');
-    }
-
-    // Reset flicker classes
-    crt.classList.remove('crt-no-flicker');
-    if (flicker === 'off') {
-      crt.classList.add('crt-no-flicker');
     }
   }
 
-  // Apply initially
-  applyCrtConfig();
+  // Terapkan saat load
+  applyState();
 
-  // If we are on the page with CRT controls, bind listeners and highlights
-  const scanHeavy = document.getElementById('crt-scan-heavy');
-  const scanLow = document.getElementById('crt-scan-low');
-  const scanOff = document.getElementById('crt-scan-off');
-  const flickerOn = document.getElementById('crt-flicker-on');
-  const flickerOff = document.getElementById('crt-flicker-off');
+  // Bind tombol kalau ada di halaman ini
+  const btnOn  = document.getElementById('crt-on');
+  const btnOff = document.getElementById('crt-off');
 
-  if (scanHeavy && scanLow && scanOff && flickerOn && flickerOff) {
-    function updateBtnActiveStates() {
-      // Clear active states
-      [scanHeavy, scanLow, scanOff, flickerOn, flickerOff].forEach(b => b.classList.remove('active'));
-
-      // Highlight active scanline button
-      if (scanlines === 'heavy') scanHeavy.classList.add('active');
-      else if (scanlines === 'low') scanLow.classList.add('active');
-      else if (scanlines === 'off') scanOff.classList.add('active');
-
-      // Highlight active flicker button
-      if (flicker === 'on') flickerOn.classList.add('active');
-      else flickerOff.classList.add('active');
+  if (btnOn && btnOff) {
+    function updateActive() {
+      btnOn.classList.toggle('active', enabled);
+      btnOff.classList.toggle('active', !enabled);
     }
 
-    updateBtnActiveStates();
+    updateActive();
 
-    scanHeavy.onclick = () => { scanlines = 'heavy'; localStorage.setItem('crt-scanlines', 'heavy'); applyCrtConfig(); updateBtnActiveStates(); };
-    scanLow.onclick = () => { scanlines = 'low'; localStorage.setItem('crt-scanlines', 'low'); applyCrtConfig(); updateBtnActiveStates(); };
-    scanOff.onclick = () => { scanlines = 'off'; localStorage.setItem('crt-scanlines', 'off'); applyCrtConfig(); updateBtnActiveStates(); };
+    btnOn.addEventListener('click', () => {
+      enabled = true;
+      localStorage.setItem('crt-enabled', 'true');
+      applyState();
+      updateActive();
+    });
 
-    flickerOn.onclick = () => { flicker = 'on'; localStorage.setItem('crt-flicker', 'on'); applyCrtConfig(); updateBtnActiveStates(); };
-    flickerOff.onclick = () => { flicker = 'off'; localStorage.setItem('crt-flicker', 'off'); applyCrtConfig(); updateBtnActiveStates(); };
+    btnOff.addEventListener('click', () => {
+      enabled = false;
+      localStorage.setItem('crt-enabled', 'false');
+      applyState();
+      updateActive();
+    });
   }
 }
 
@@ -835,7 +820,7 @@ function initSkills() {
 
     category.skills.forEach(skill => {
       const li = document.createElement('li');
-      li.innerHTML = `⚡ <span>[Device: Online] — ${skill.name}</span>`;
+      li.innerHTML = `⚡ <span>${skill.name}</span>`;
       li.style.cursor = 'pointer';
       li.style.padding = '4px 6px';
       
@@ -844,8 +829,8 @@ function initSkills() {
         deviceList.querySelectorAll('li').forEach(item => item.classList.remove('selected-item'));
         li.classList.add('selected-item');
 
-        // Populate device properties panel
-        if (detailsTitle) detailsTitle.textContent = `${skill.name} Properties`;
+        // Populate skill details panel
+        if (detailsTitle) detailsTitle.textContent = `${skill.name}`;
         if (detailsIcon) detailsIcon.innerHTML = skill.icon;
         if (detailsDesc) detailsDesc.textContent = skill.desc;
       };
@@ -853,10 +838,10 @@ function initSkills() {
       deviceList.appendChild(li);
     });
 
-    // Reset properties box
-    if (detailsTitle) detailsTitle.textContent = 'Device Properties';
+    // Reset panel ke state awal
+    if (detailsTitle) detailsTitle.textContent = 'Skill Details';
     if (detailsIcon) detailsIcon.innerHTML = '🔍';
-    if (detailsDesc) detailsDesc.textContent = 'Select a skill component from the list above to view its properties, operational status, and development applications.';
+    if (detailsDesc) detailsDesc.textContent = 'Pilih skill dari list di atas untuk lihat deskripsi dan level.';
   }
 
   function setActiveTab(index, clickedBtn) {
