@@ -435,6 +435,10 @@ async function initPosts() {
         setTimeout(() => { singleView.style.opacity = '1'; }, 10);
       }
 
+      // Fix #1: Reset scroll ke atas setiap kali buka post baru
+      const explorerContent = document.getElementById('post-viewer');
+      if (explorerContent) explorerContent.scrollTop = 0;
+
       const titleEl = document.getElementById('view-title');
       const dateEl = document.getElementById('view-date');
       const catEl = document.getElementById('view-category');
@@ -445,12 +449,20 @@ async function initPosts() {
       if (catEl) catEl.textContent = post.type.toUpperCase();
 
       if (contentEl) {
-        // Helper function to prevent code repetition
+        // Fix #2: renderText dengan retry — tunggu marked siap sebelum fallback ke plain text
         const renderText = (text) => {
           if (typeof marked !== 'undefined') {
             contentEl.innerHTML = marked.parse(text);
           } else {
-            contentEl.innerText = text;
+            // marked dari CDN belum ready — coba lagi setelah 300ms
+            setTimeout(() => {
+              if (typeof marked !== 'undefined') {
+                contentEl.innerHTML = marked.parse(text);
+              } else {
+                // CDN gagal total — tampil sebagai plain text
+                contentEl.innerText = text;
+              }
+            }, 300);
           }
         };
 
@@ -461,7 +473,9 @@ async function initPosts() {
           fetch(post.file) // Fetch the external markdown file
             .then(response => response.text())
             .then(text => renderText(text))
-            .catch(err => renderText("Failed to load article 😢"));
+            .catch(err => {
+              contentEl.innerHTML = '<p class="loading-text">Failed to load article 😢</p>';
+            });
         } else {
           // Fallback to legacy system (inline content from posts.json)
           renderText(post.content);
