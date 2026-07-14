@@ -1209,7 +1209,41 @@ ul.tree-view li.folder {
   }
 }
 
+/* === CRT Monitor Control States === */
+
+/* Scanlines: OFF — sembunyikan scanline overlay sepenuhnya */
+.crt-overlay.crt-off {
+  background: none;
+  opacity: 0;
+}
+.crt-overlay.crt-off::before,
+.crt-overlay.crt-off::after {
+  display: none;
+}
+
+/* Scanlines: LOW — kurangi intensitas scanline */
+.crt-overlay.crt-low-scanlines {
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+  opacity: 0.5;
+  background-size: 100% 2px, 3px 100%;
+}
+
+/* Flicker: OFF — matikan animasi flicker di ::after */
+.crt-overlay.crt-no-flicker::after {
+  animation: none;
+  opacity: 0.06;
+}
+
+/* Active state untuk tombol CRT control */
+.crt-btn.active {
+  background: #000080;
+  color: #fff;
+  border-color: #000080;
+}
+
 /* === Work Badge Sticker === */
+
 .work-badge {
   position: fixed;
   bottom: 70px;
