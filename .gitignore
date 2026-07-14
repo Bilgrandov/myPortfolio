@@ -1,5 +1,6 @@
 # Ignore local study notes so it won't be pushed to public repo
 portfolio_study_notes.md
+ROADMAP.md
 
 # OS generated files
 .DS_Store
